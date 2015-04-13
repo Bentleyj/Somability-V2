@@ -1,11 +1,12 @@
 ﻿//
 // App.xaml.h
-// Declaration of the App class
+// Declaration of the App class.
 //
 
 #pragma once
 
 #include "App.g.h"
+#include "DirectXPage.xaml.h"
 
 namespace Somability_UI
 {
@@ -14,14 +15,12 @@ namespace Somability_UI
 	/// </summary>
 	ref class App sealed
 	{
-	protected:
-		virtual void OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEventArgs^ e) override;
-
-	internal:
+	public:
 		App();
+		virtual void OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEventArgs^ args) override;
 
 	private:
-		void OnSuspending(Platform::Object^ sender, Windows::ApplicationModel::SuspendingEventArgs^ e);
-		void OnNavigationFailed(Platform::Object ^sender, Windows::UI::Xaml::Navigation::NavigationFailedEventArgs ^e);
+		void OnSuspending(Platform::Object^ sender, Windows::ApplicationModel::SuspendingEventArgs^ args);
+		DirectXPage^ m_directXPage;
 	};
 }

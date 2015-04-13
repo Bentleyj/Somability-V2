@@ -3,7 +3,7 @@
 #include "AngleBase.h"
 
 // Renders Direct2D and 3D content on the screen.
-namespace ofXamlApp
+namespace Somability_UI
 {
 	ref class ofXamlAppMain sealed : public AngleBase
 	{

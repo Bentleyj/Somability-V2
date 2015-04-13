@@ -4,6 +4,19 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
+	//enable events for all states
+	//stateMachine.enableKeyEvents();
+	//stateMachine.enableMouseEvents();
+
+	//set up variables in shared data
+	stateMachine.getSharedData().num = 0;
+
+	//add all the states
+	stateMachine.addState<FlowState>();
+
+	//set initial state
+	stateMachine.changeState("flow");
+
 	_kinect = KinectSensor::GetDefault();
 	if (_kinect != nullptr)
 	{

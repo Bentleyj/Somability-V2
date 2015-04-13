@@ -6,7 +6,7 @@
 #include "pch.h"
 #include "DirectXPage.xaml.h"
 
-using namespace ofXamlApp;
+using namespace Somability_UI;
 
 using namespace Platform;
 using namespace Windows::Foundation;

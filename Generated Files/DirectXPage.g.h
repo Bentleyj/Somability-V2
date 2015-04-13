@@ -12,14 +12,14 @@ namespace Windows {
     namespace UI {
         namespace Xaml {
             namespace Controls {
-                ref class SwapChainPanel;
+                ref class SwapChainBackgroundPanel;
                 ref class TextBlock;
             }
         }
     }
 }
 
-namespace ofXamlApp
+namespace Somability_UI
 {
     partial ref class DirectXPage : public ::Windows::UI::Xaml::Controls::Page, 
         public ::Windows::UI::Xaml::Markup::IComponentConnector
@@ -31,7 +31,7 @@ namespace ofXamlApp
     private:
         bool _contentLoaded;
     
-        private: ::Windows::UI::Xaml::Controls::SwapChainPanel^ SwapChainPanel;
+        private: ::Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ SwapChainPanel;
         private: ::Windows::UI::Xaml::Controls::TextBlock^ SimpleTextBlock;
     };
 }

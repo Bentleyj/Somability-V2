@@ -1,6 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxStateMachine.h"
+#include "SharedData.h"
+#include "FlowState.h"
 
 using namespace WindowsPreview::Kinect;
 using namespace Platform;
@@ -34,4 +37,6 @@ class ofApp : public ofBaseApp{
 
 		unsigned int _bytesPerPixel;
 		bool _colorFrameProcessed;
+
+		itg::ofxStateMachine<SharedData> stateMachine; //state macgine that runs everything
 };

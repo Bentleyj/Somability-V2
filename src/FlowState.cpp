@@ -64,6 +64,10 @@ JointType Limbs[] [2] =
 	{ JointType::Neck, JointType::Head }
 };
 
+string FlowState::getName() {
+	return "flow";
+}
+
 void FlowState::setup()
 {
 	//if (!shader.load("shader"))
@@ -93,6 +97,7 @@ void FlowState::setup()
 
 void FlowState::update()
 {
+	getSharedData().incNum();
 	_bodiesProcessed = false;
 	_colorFrameProcessed = false;
 
@@ -202,6 +207,7 @@ void FlowState::draw()
 	shader.end();
 
 	ofPopMatrix();
+	ofDrawBitmapString(ofToString(getSharedData().num), 10, 10);
 }
 
 #if 0

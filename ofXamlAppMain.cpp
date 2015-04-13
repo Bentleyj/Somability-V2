@@ -3,9 +3,9 @@
 #include "DirectXHelper.h"
 #include "ofMain.h"
 #include "ofAppWinRTWindow.h"
-#include "src/FlowState.h"
+#include "src/ofApp.h"
 
-using namespace ofXamlApp;
+using namespace Somability_UI;
 
 void ofGLReadyCallback();
 
@@ -57,7 +57,7 @@ void ofXamlAppMain::CreateGLResources()
 {
 	Windows::Foundation::Rect bounds = m_window->Bounds;
 	ofSetupOpenGL(bounds.Width, bounds.Height, OF_WINDOW);
-	ofRunAppXaml(ofPtr<FlowState>(new FlowState()));
+	ofRunAppXaml(ofPtr<ofApp>(new ofApp()));
 	reinterpret_cast<ofAppWinRTWindow*>(ofGetWindowPtr())->SetWindowXaml(m_window.Get());
 	ofGLReadyCallback();
 	ofNotifySetup();

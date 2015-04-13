@@ -93,13 +93,12 @@
     <ClCompile Include="..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics\Joints\b2WheelJoint.cpp" />
     <ClCompile Include="..\..\..\addons\ofxBox2d\libs\Box2D\Rope\b2Rope.cpp" />
     <ClCompile Include="..\..\..\addons\ofxBox2d\libs\triangle\del_impl.cpp" />
-    <ClCompile Include="Common\NavigationHelper.cpp" />
-    <ClCompile Include="Common\RelayCommand.cpp" />
-    <ClCompile Include="Common\SuspensionManager.cpp" />
-    <ClCompile Include="DataModel\SampleDataSource.cpp" />
     <ClCompile Include="GroupDetailPage.xaml.cpp" />
     <ClCompile Include="GroupedItemsPage.xaml.cpp" />
     <ClCompile Include="ItemDetailPage.xaml.cpp" />
+    <ClCompile Include="src\SharedData.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.xaml.h" />
@@ -178,13 +177,12 @@
     <ClInclude Include="..\..\..\addons\ofxBox2d\libs\triangle\triangle_impl.hpp" />
     <ClInclude Include="..\..\..\addons\ofxStateMachine\src\ofxState.h" />
     <ClInclude Include="..\..\..\addons\ofxStateMachine\src\ofxStateMachine.h" />
-    <ClInclude Include="Common\NavigationHelper.h" />
-    <ClInclude Include="Common\RelayCommand.h" />
-    <ClInclude Include="Common\SuspensionManager.h" />
-    <ClInclude Include="DataModel\SampleDataSource.h" />
     <ClInclude Include="GroupDetailPage.xaml.h" />
     <ClInclude Include="GroupedItemsPage.xaml.h" />
     <ClInclude Include="ItemDetailPage.xaml.h" />
+    <ClInclude Include="src\SharedData.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
@@ -231,15 +229,11 @@
   <ItemGroup>
     <Page Include="DirectXPage.xaml" />
     <Page Include="StandardStyles.xaml" />
-    <Page Include="GroupDetailPage.xaml" />
-    <Page Include="ItemDetailPage.xaml" />
-    <Page Include="GroupedItemsPage.xaml" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Common\ReadMe.txt" />
-    <Text Include="DataModel\SampleData.json" />
   </ItemGroup>
 </Project>

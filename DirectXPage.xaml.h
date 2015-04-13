@@ -8,7 +8,7 @@
 #include "DirectXPage.g.h"
 #include "ofXamlAppMain.h"
 
-namespace ofXamlApp
+namespace Somability_UI
 {
 	/// <summary>
 	/// A DirectX page that can be used on its own.  Note that it may not be used within a Frame.

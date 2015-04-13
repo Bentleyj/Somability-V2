@@ -33,6 +33,8 @@
 
 //#include "SomabilityApp.h"
 #include "Trail.h"
+#include "ofxState.h"
+#include "SharedData.h"
 
 using namespace WindowsPreview::Kinect;
 using namespace Platform;
@@ -41,13 +43,14 @@ using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace std;
 
-class FlowState : public ofBaseApp
+class FlowState : public ofBaseApp, public itg::ofxState<SharedData>
 	//: public SomabilityApp
 {
 public:
 	void setup();
 	void update();
 	void draw();
+	string getName();
 #if 0
 	void mouseReleased(int x, int y, int button);
 	void mouseMoved(int x, int y, int button);

@@ -12,7 +12,7 @@
 
 
 
-void ::ofXamlApp::DirectXPage::InitializeComponent()
+void ::Somability_UI::DirectXPage::InitializeComponent()
 {
     if (_contentLoaded)
         return;
@@ -22,29 +22,29 @@ void ::ofXamlApp::DirectXPage::InitializeComponent()
     // Call LoadComponent on ms-appx:///DirectXPage.xaml
     ::Windows::UI::Xaml::Application::LoadComponent(this, ref new ::Windows::Foundation::Uri(L"ms-appx:///DirectXPage.xaml"), ::Windows::UI::Xaml::Controls::Primitives::ComponentResourceLocation::Application);
 
-    // Get the SwapChainPanel named 'SwapChainPanel'
-    SwapChainPanel = safe_cast<::Windows::UI::Xaml::Controls::SwapChainPanel^>(static_cast<Windows::UI::Xaml::IFrameworkElement^>(this)->FindName(L"SwapChainPanel"));
+    // Get the SwapChainBackgroundPanel named 'SwapChainPanel'
+    SwapChainPanel = safe_cast<::Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^>(static_cast<Windows::UI::Xaml::IFrameworkElement^>(this)->FindName(L"SwapChainPanel"));
     // Get the TextBlock named 'SimpleTextBlock'
     SimpleTextBlock = safe_cast<::Windows::UI::Xaml::Controls::TextBlock^>(static_cast<Windows::UI::Xaml::IFrameworkElement^>(this)->FindName(L"SimpleTextBlock"));
 }
 
-void ::ofXamlApp::DirectXPage::Connect(int connectionId, Platform::Object^ target)
+void ::Somability_UI::DirectXPage::Connect(int connectionId, Platform::Object^ target)
 {
     switch (connectionId)
     {
     case 1:
         (safe_cast<::Windows::UI::Xaml::UIElement^>(target))->PointerMoved +=
-            ref new ::Windows::UI::Xaml::Input::PointerEventHandler(this, (void (::ofXamlApp::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::Input::PointerRoutedEventArgs^))&DirectXPage::OnPointerMoved);
+            ref new ::Windows::UI::Xaml::Input::PointerEventHandler(this, (void (::Somability_UI::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::Input::PointerRoutedEventArgs^))&DirectXPage::OnPointerMoved);
         (safe_cast<::Windows::UI::Xaml::UIElement^>(target))->PointerReleased +=
-            ref new ::Windows::UI::Xaml::Input::PointerEventHandler(this, (void (::ofXamlApp::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::Input::PointerRoutedEventArgs^))&DirectXPage::OnPointerReleased);
+            ref new ::Windows::UI::Xaml::Input::PointerEventHandler(this, (void (::Somability_UI::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::Input::PointerRoutedEventArgs^))&DirectXPage::OnPointerReleased);
         break;
     case 2:
         (safe_cast<::Windows::UI::Xaml::Controls::Primitives::ButtonBase^>(target))->Click +=
-            ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::ofXamlApp::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::RoutedEventArgs^))&DirectXPage::OnNextColorPressed);
+            ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Somability_UI::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::RoutedEventArgs^))&DirectXPage::OnNextColorPressed);
         break;
     case 3:
         (safe_cast<::Windows::UI::Xaml::Controls::Primitives::ButtonBase^>(target))->Click +=
-            ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::ofXamlApp::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::RoutedEventArgs^))&DirectXPage::OnPreviousColorPressed);
+            ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Somability_UI::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::RoutedEventArgs^))&DirectXPage::OnPreviousColorPressed);
         break;
     }
     (void)connectionId; // Unused parameter

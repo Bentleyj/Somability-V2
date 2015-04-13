@@ -9,8 +9,13 @@
     <Application.Resources>
 
         <!-- Application-specific resources -->
-
-        <x:String x:Key="AppName">Somability_UI</x:String>
+        
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="StandardStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <x:String x:Key="AppName">Somability_UI</x:String>
+        </ResourceDictionary>
 
     </Application.Resources>
 </Application>
