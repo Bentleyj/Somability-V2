@@ -20,7 +20,7 @@ AngleBase::AngleBase()
 }
 
 // Initialize the Angle resources required to run.
-void AngleBase::Initialize(Windows::UI::Core::CoreWindow^ window, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ panel, float dpi)
+void AngleBase::Initialize(Windows::UI::Core::CoreWindow^ window, Windows::UI::Xaml::Controls::SwapChainPanel^ panel, float dpi)
 {
 	m_window = window;
     m_panel = panel;

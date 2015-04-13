@@ -16,7 +16,7 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <SwapChainBackgroundPanel x:ConnectionId='1' x:Name="SwapChainPanel"
+    <SwapChainPanel x:ConnectionId='1' x:Name="SwapChainPanel"
                                                            
                                                                  >
         <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -61,6 +61,6 @@
                            Margin="0,0,30,40" />
             </Grid>
         </Grid>
-    </SwapChainBackgroundPanel>
+    </SwapChainPanel>
 </Page>
 

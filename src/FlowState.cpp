@@ -66,8 +66,8 @@ JointType Limbs[] [2] =
 
 void FlowState::setup()
 {
-	if (!shader.load("shader"))
-		return;
+	//if (!shader.load("shader"))
+	//	return;
 
 	_kinect = KinectSensor::GetDefault();
 	if (_kinect != nullptr)

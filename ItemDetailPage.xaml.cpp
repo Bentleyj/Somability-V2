@@ -24,15 +24,44 @@ using namespace Windows::UI::Xaml::Interop;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 
+using namespace ofXamlApp;
+using namespace Windows::UI::Core;
+
 // The Item Detail Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234232
 
-ItemDetailPage::ItemDetailPage()
+ItemDetailPage::ItemDetailPage() :
+	m_renderNeeded(true),
+	m_lastPointValid(false)
 {
 	InitializeComponent();
 	SetValue(_defaultViewModelProperty, ref new Map<String^,Object^>(std::less<String^>()));
 	auto navigationHelper = ref new Common::NavigationHelper(this);
 	SetValue(_navigationHelperProperty, navigationHelper);
 	navigationHelper->LoadState += ref new Common::LoadStateEventHandler(this, &ItemDetailPage::LoadState);
+
+	m_renderer = ref new ofXamlAppMain();
+
+	m_renderer->Initialize(
+		Window::Current->CoreWindow,
+		SwapChainPanel,
+		DisplayInformation::GetForCurrentView()->LogicalDpi
+		);
+
+	Window::Current->CoreWindow->SizeChanged +=
+		ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &ItemDetailPage::OnWindowSizeChanged);
+
+	DisplayInformation::GetForCurrentView()->DpiChanged +=
+		ref new TypedEventHandler<DisplayInformation^, Platform::Object^>(this, &ItemDetailPage::OnDpiChanged);
+
+	DisplayInformation::GetForCurrentView()->OrientationChanged +=
+		ref new TypedEventHandler<DisplayInformation^, Platform::Object^>(this, &ItemDetailPage::OnOrientationChanged);
+
+	DisplayInformation::DisplayContentsInvalidated +=
+		ref new TypedEventHandler<DisplayInformation^, Platform::Object^>(this, &ItemDetailPage::OnDisplayContentsInvalidated);
+
+	m_eventToken = CompositionTarget::Rendering::add(ref new EventHandler<Object^>(this, &ItemDetailPage::OnRendering));
+
+	//m_timer = ref new BasicTimer();
 }
 
 DependencyProperty^ ItemDetailPage::_defaultViewModelProperty =
@@ -109,4 +138,93 @@ void ItemDetailPage::OnNavigatedFrom(NavigationEventArgs^ e)
 {
 	NavigationHelper->OnNavigatedFrom(e);
 }
+
+
+
+void ItemDetailPage::OnPointerMoved(Object^ sender, PointerRoutedEventArgs^ args)
+{
+	auto currentPoint = args->GetCurrentPoint(nullptr);
+	if (currentPoint->IsInContact)
+	{
+		if (m_lastPointValid)
+		{
+			Windows::Foundation::Point delta(
+				currentPoint->Position.X - m_lastPoint.X,
+				currentPoint->Position.Y - m_lastPoint.Y
+				);
+			//m_renderer->UpdatePosition(delta);
+			m_renderNeeded = true;
+		}
+		m_lastPoint = currentPoint->Position;
+		m_lastPointValid = true;
+	}
+	else
+	{
+		m_lastPointValid = false;
+	}
+}
+
+void ItemDetailPage::OnPointerReleased(Object^ sender, PointerRoutedEventArgs^ args)
+{
+	m_lastPointValid = false;
+}
+
+void ItemDetailPage::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
+{
+	m_renderer->UpdateForWindowSizeChange();
+	m_renderNeeded = true;
+}
+
+void ItemDetailPage::OnDpiChanged(DisplayInformation^ sender, Platform::Object^ args)
+{
+	m_renderer->SetDpi(sender->LogicalDpi);
+	m_renderNeeded = true;
+}
+
+void ItemDetailPage::OnOrientationChanged(DisplayInformation^ sender, Platform::Object^ args)
+{
+	m_renderer->UpdateForWindowSizeChange();
+	m_renderNeeded = true;
+}
+
+void ItemDetailPage::OnDisplayContentsInvalidated(DisplayInformation^ sender, Platform::Object^ arg)
+{
+	m_renderer->ValidateDevice();
+	m_renderNeeded = true;
+}
+
+void ItemDetailPage::OnRendering(Object^ sender, Object^ args)
+{
+	if (m_renderNeeded)
+	{
+		//m_timer->Update();
+		m_renderer->Update();
+		m_renderer->Render();
+		//m_renderer->Present();
+		m_renderNeeded = true;
+	}
+}
+
+void ItemDetailPage::OnPreviousColorPressed(Object^ sender, RoutedEventArgs^ args)
+{
+	//m_renderer->BackgroundColorPrevious();
+	m_renderNeeded = true;
+}
+
+void ItemDetailPage::OnNextColorPressed(Object^ sender, RoutedEventArgs^ args)
+{
+	//m_renderer->BackgroundColorNext();
+	m_renderNeeded = true;
+}
+
+void ItemDetailPage::SaveInternalState(IPropertySet^ state)
+{
+	m_renderer->ReleaseResourcesForSuspending();
+}
+
+void ItemDetailPage::LoadInternalState(IPropertySet^ state)
+{
+	//m_renderer->LoadInternalState(state);
+}
+
 #pragma endregion

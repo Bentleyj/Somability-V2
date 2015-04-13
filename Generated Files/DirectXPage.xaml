@@ -6,9 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <SwapChainBackgroundPanel x:ConnectionId='1' x:Name="SwapChainPanel"                                                                  >
+    <SwapChainPanel x:ConnectionId='1' x:Name="SwapChainPanel"                                                                  >
         <TextBlock x:Name="SimpleTextBlock" HorizontalAlignment="Center" FontSize="42" Height="72" Text="Hello, XAML!" Margin="0,0,0,50"/>
-    </SwapChainBackgroundPanel>
+    </SwapChainPanel>
     <Page.BottomAppBar>
         <AppBar Padding="10,0,10,0">
             <Grid>

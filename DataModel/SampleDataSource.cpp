@@ -158,6 +158,7 @@ SampleDataItem::SampleDataItem(String^ uniqueId, String^ title, String^ subtitle
 			_groups = ref new Vector<SampleDataGroup^>();
 
 			Uri^ uri = ref new Uri("ms-appx:///DataModel/SampleData.json");
+
 			create_task(StorageFile::GetFileFromApplicationUriAsync(uri))
 				.then([](StorageFile^ storageFile)
 			{

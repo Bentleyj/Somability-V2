@@ -15,7 +15,7 @@ internal:
 	AngleBase();
 
 public:
-	virtual void Initialize(Windows::UI::Core::CoreWindow^ window, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ panel, float dpi);
+	virtual void Initialize(Windows::UI::Core::CoreWindow^ window, Windows::UI::Xaml::Controls::SwapChainPanel^ panel, float dpi);
 	virtual void HandleDeviceLost();
 	virtual void ValidateDevice();
 	virtual void CreateDeviceResources();
@@ -39,7 +39,7 @@ protected private:
 	Windows::Foundation::Size m_renderTargetSize;
 	Windows::Foundation::Rect m_windowBounds;
 	Platform::Agile<Windows::UI::Core::CoreWindow> m_window;
-	Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ m_panel;
+	Windows::UI::Xaml::Controls::SwapChainPanel^ m_panel;
 	float m_dpi;
 
     // Angle EGL 

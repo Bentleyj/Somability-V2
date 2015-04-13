@@ -22,8 +22,8 @@ void ::ofXamlApp::DirectXPage::InitializeComponent()
     // Call LoadComponent on ms-appx:///DirectXPage.xaml
     ::Windows::UI::Xaml::Application::LoadComponent(this, ref new ::Windows::Foundation::Uri(L"ms-appx:///DirectXPage.xaml"), ::Windows::UI::Xaml::Controls::Primitives::ComponentResourceLocation::Application);
 
-    // Get the SwapChainBackgroundPanel named 'SwapChainPanel'
-    SwapChainPanel = safe_cast<::Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^>(static_cast<Windows::UI::Xaml::IFrameworkElement^>(this)->FindName(L"SwapChainPanel"));
+    // Get the SwapChainPanel named 'SwapChainPanel'
+    SwapChainPanel = safe_cast<::Windows::UI::Xaml::Controls::SwapChainPanel^>(static_cast<Windows::UI::Xaml::IFrameworkElement^>(this)->FindName(L"SwapChainPanel"));
     // Get the TextBlock named 'SimpleTextBlock'
     SimpleTextBlock = safe_cast<::Windows::UI::Xaml::Controls::TextBlock^>(static_cast<Windows::UI::Xaml::IFrameworkElement^>(this)->FindName(L"SimpleTextBlock"));
 }

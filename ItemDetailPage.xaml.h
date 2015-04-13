@@ -6,6 +6,9 @@
 #pragma once
 
 #include "ItemDetailPage.g.h"
+#include "ofXamlAppMain.h"
+
+using namespace ofXamlApp;
 
 namespace Somability_UI
 {
@@ -34,6 +37,12 @@ namespace Somability_UI
 			Common::NavigationHelper^ get();
 		}
 
+		void OnPreviousColorPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void OnNextColorPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+
+		void SaveInternalState(Windows::Foundation::Collections::IPropertySet^ state);
+		void LoadInternalState(Windows::Foundation::Collections::IPropertySet^ state);
+
 	protected:
 		virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 		virtual void OnNavigatedFrom(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
@@ -43,5 +52,23 @@ namespace Somability_UI
 
 		static Windows::UI::Xaml::DependencyProperty^ _defaultViewModelProperty;
 		static Windows::UI::Xaml::DependencyProperty^ _navigationHelperProperty;
+
+		void OnPointerMoved(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
+		void OnPointerReleased(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
+		void OnWindowSizeChanged(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::WindowSizeChangedEventArgs^ args);
+		void OnDpiChanged(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
+		void OnOrientationChanged(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
+		void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ arg);
+		void OnRendering(Object^ sender, Object^ args);
+
+		Windows::Foundation::EventRegistrationToken m_eventToken;
+
+		ofXamlAppMain^ m_renderer;
+		bool m_renderNeeded;
+
+		Windows::Foundation::Point m_lastPoint;
+		bool m_lastPointValid;
+
+		//BasicTimer^ m_timer;
 	};
 }
