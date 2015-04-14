@@ -142,9 +142,19 @@ void DirectXPage::LoadInternalState(IPropertySet^ state)
 	//m_renderer->LoadInternalState(state);
 }
 
+std::string ws2s(const std::wstring& wstr)
+{
+	typedef std::codecvt_utf8<wchar_t> convert_typeX;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+	return converterX.to_bytes(wstr);
+}
 
 void Somability_UI::DirectXPage::Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	int buttonClickedArgs = 0;
-	ofNotifyEvent(EventHub::buttonClickEvent, buttonClickedArgs);
+	auto button = dynamic_cast<Windows::UI::Xaml::Controls::Button^>(sender);
+	std::string arguments = ws2s(button->Tag->ToString()->Data());
+	ofNotifyEvent(EventHub::buttonClickEvent, arguments);
 }
+
+

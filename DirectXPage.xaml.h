@@ -7,6 +7,8 @@
 
 #include "DirectXPage.g.h"
 #include "ofXamlAppMain.h"
+#include <locale>
+#include <codecvt>
 
 namespace Somability_UI
 {

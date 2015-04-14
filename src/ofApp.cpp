@@ -45,6 +45,10 @@ void ofApp::draw()
 	}
 }
 
+std::string ofApp::getName() {
+	return "ofApp";
+}
+
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
@@ -72,10 +76,7 @@ void ofApp::mouseDragged(int x, int y, int button)
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button)
 {
-	stringstream ss;
-	ss << "mousePressed: " << x << ", " << y << " button: " << button << endl;
-	auto vr = ss.str();
-	OutputDebugStringA(vr.c_str());
+
 }
 
 //--------------------------------------------------------------

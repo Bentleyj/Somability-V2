@@ -7,10 +7,12 @@
 
 #pragma once
 #include "ofEvents.h"
+#include "ofxStateMachine.h"
+#include "SharedData.h"
 
-class EventHub {
+class EventHub : public itg::ofxState<SharedData> {
 public:
-	static ofEvent<int> buttonClickEvent;
+	static ofEvent<string> buttonClickEvent;
 	void setupEvents();
-	void swapState(int& arg);
+	void swapState(string& arg);
 };

@@ -19,6 +19,7 @@ class ofApp : public ofBaseApp, public EventHub{
 		void update();
 		void draw();
 		void exit();
+		std::string getName();
 
 		void keyPressed(int key);
 		void keyReleased(int key);

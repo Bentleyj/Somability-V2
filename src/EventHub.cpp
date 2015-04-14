@@ -5,16 +5,19 @@
  */
 
 #include "EventHub.h"
+#include <locale>
 
-ofEvent<int> EventHub::buttonClickEvent;
+ofEvent<string> EventHub::buttonClickEvent;
 
 void EventHub::setupEvents() {
 
 	ofAddListener(buttonClickEvent, this, &EventHub::swapState);
 }
 
-void EventHub::swapState(int& arg) {
-
+void EventHub::swapState(string& arg) {
+	//std::string argNew(arg.c_str());
+	//std::wstring_convert(arg.c_str());
+	changeState(arg);
 }
 
 
