@@ -63,18 +63,12 @@ public:
 
 	//void userEvent(ofxOpenNIUserEvent & event);
 private:
-	ofShader shader;
 
-	KinectSensor^ _kinect;
-	MultiSourceFrameReader^ _multiFrameReader;
 	ofTexture _tex;
 	ofImage _img;
-	Array<byte>^ _colorPixels;
 
 	Array<CameraSpacePoint>^ _camSpacePoints;
 	Array<ColorSpacePoint>^ _colSpacePoints;
-
-	Vector<Body^>^ _bodies;
 
 	unsigned int _bytesPerPixel;
 	bool _colorFrameProcessed;

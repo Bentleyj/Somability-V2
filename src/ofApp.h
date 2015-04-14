@@ -29,14 +29,6 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 	private:
-		KinectSensor^ _kinect;
-		MultiSourceFrameReader^ _multiFrameReader;
-		ofTexture _tex;
-		ofImage _img;
-		Array<byte>^ _colorPixels;
-
-		unsigned int _bytesPerPixel;
-		bool _colorFrameProcessed;
 
 		itg::ofxStateMachine<SharedData> stateMachine; //state macgine that runs everything
 };
