@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "DirectXPage.xaml.h"
+#include "ofEvents.h"
 
 using namespace Somability_UI;
 
@@ -138,4 +139,10 @@ void DirectXPage::SaveInternalState(IPropertySet^ state)
 void DirectXPage::LoadInternalState(IPropertySet^ state)
 {
 	//m_renderer->LoadInternalState(state);
+}
+
+
+void Somability_UI::DirectXPage::Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	//ofNotifyEvent(ofEvents().buttonClick, buttonClickedArgs);
 }

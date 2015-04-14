@@ -43,5 +43,6 @@ namespace Somability_UI
 		bool m_lastPointValid;
 		
 		//BasicTimer^ m_timer;
+		void Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

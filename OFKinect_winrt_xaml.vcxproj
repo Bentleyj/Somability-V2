@@ -98,6 +98,7 @@
     <PackageCertificateKeyFile>OFKinect_winrt_xaml_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>3F018E1C5ABA1F2F5E987B39771CE201B4AEEF1F</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
@@ -272,10 +273,47 @@
     <None Include="OFKinect_winrt_xaml_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Logo.png" />
-    <Image Include="Assets\SmallLogo.png" />
-    <Image Include="Assets\StoreLogo.png" />
-    <Image Include="Assets\SplashScreen.png" />
+    <Image Include="Assets\bkg-balance.png" />
+    <Image Include="Assets\bkg-flow.png" />
+    <Image Include="Assets\bkg-reach.png" />
+    <Image Include="Assets\logo.scale-100.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Assets\logo.scale-140.png" />
+    <Image Include="Assets\logo.scale-180.png" />
+    <Image Include="Assets\logo.scale-80.png" />
+    <Image Include="Assets\secondary-square.png" />
+    <Image Include="Assets\smalllogo.scale-100.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Assets\smalllogo.scale-140.png" />
+    <Image Include="Assets\smalllogo.scale-180.png" />
+    <Image Include="Assets\smalllogo.scale-80.png" />
+    <Image Include="Assets\somability-logo.png" />
+    <Image Include="Assets\splashscreen.scale-100.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Assets\splashscreen.scale-140.png" />
+    <Image Include="Assets\splashscreen.scale-180.png" />
+    <Image Include="Assets\Square310x310Logo.scale-100.png" />
+    <Image Include="Assets\Square310x310Logo.scale-140.png" />
+    <Image Include="Assets\Square310x310Logo.scale-180.png" />
+    <Image Include="Assets\Square310x310Logo.scale-80.png" />
+    <Image Include="Assets\Square70x70Logo.scale-100.png" />
+    <Image Include="Assets\Square70x70Logo.scale-140.png" />
+    <Image Include="Assets\Square70x70Logo.scale-180.png" />
+    <Image Include="Assets\Square70x70Logo.scale-80.png" />
+    <Image Include="Assets\storelogo.scale-100.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Assets\storelogo.scale-140.png" />
+    <Image Include="Assets\storelogo.scale-180.png" />
+    <Image Include="Assets\widelogo.scale-100.png" />
+    <Image Include="Assets\widelogo.scale-140.png" />
+    <Image Include="Assets\widelogo.scale-180.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Assets\widelogo.scale-80.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXHelper.h" />

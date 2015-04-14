@@ -40,11 +40,7 @@ void ::Somability_UI::DirectXPage::Connect(int connectionId, Platform::Object^ t
         break;
     case 2:
         (safe_cast<::Windows::UI::Xaml::Controls::Primitives::ButtonBase^>(target))->Click +=
-            ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Somability_UI::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::RoutedEventArgs^))&DirectXPage::OnNextColorPressed);
-        break;
-    case 3:
-        (safe_cast<::Windows::UI::Xaml::Controls::Primitives::ButtonBase^>(target))->Click +=
-            ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Somability_UI::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::RoutedEventArgs^))&DirectXPage::OnPreviousColorPressed);
+            ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Somability_UI::DirectXPage::*)(Platform::Object^, Windows::UI::Xaml::RoutedEventArgs^))&DirectXPage::Button_Click);
         break;
     }
     (void)connectionId; // Unused parameter

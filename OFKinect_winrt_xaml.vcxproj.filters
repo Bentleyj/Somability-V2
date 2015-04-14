@@ -4,18 +4,6 @@
     <Filter Include="Assets">
       <UniqueIdentifier>0f820432-05c3-4f10-9fec-5be0675e1864</UniqueIdentifier>
     </Filter>
-    <Image Include="Assets\Logo.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\SmallLogo.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\StoreLogo.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\SplashScreen.png">
-      <Filter>Assets</Filter>
-    </Image>
     <Filter Include="arm dlls">
       <UniqueIdentifier>{fbaa75c3-b087-481e-be24-d8a65e0ae7a9}</UniqueIdentifier>
     </Filter>
@@ -93,9 +81,6 @@
     <ClCompile Include="..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics\Joints\b2WheelJoint.cpp" />
     <ClCompile Include="..\..\..\addons\ofxBox2d\libs\Box2D\Rope\b2Rope.cpp" />
     <ClCompile Include="..\..\..\addons\ofxBox2d\libs\triangle\del_impl.cpp" />
-    <ClCompile Include="GroupDetailPage.xaml.cpp" />
-    <ClCompile Include="GroupedItemsPage.xaml.cpp" />
-    <ClCompile Include="ItemDetailPage.xaml.cpp" />
     <ClCompile Include="src\SharedData.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -177,9 +162,6 @@
     <ClInclude Include="..\..\..\addons\ofxBox2d\libs\triangle\triangle_impl.hpp" />
     <ClInclude Include="..\..\..\addons\ofxStateMachine\src\ofxState.h" />
     <ClInclude Include="..\..\..\addons\ofxStateMachine\src\ofxStateMachine.h" />
-    <ClInclude Include="GroupDetailPage.xaml.h" />
-    <ClInclude Include="GroupedItemsPage.xaml.h" />
-    <ClInclude Include="ItemDetailPage.xaml.h" />
     <ClInclude Include="src\SharedData.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -235,5 +217,100 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Common\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\bkg-balance.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\bkg-flow.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\bkg-reach.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\logo.scale-80.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\logo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\logo.scale-140.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\logo.scale-180.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\secondary-square.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\smalllogo.scale-80.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\smalllogo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\smalllogo.scale-140.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\smalllogo.scale-180.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\somability-logo.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\splashscreen.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\splashscreen.scale-140.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\splashscreen.scale-180.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square70x70Logo.scale-80.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square70x70Logo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square70x70Logo.scale-140.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square70x70Logo.scale-180.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square310x310Logo.scale-80.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square310x310Logo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square310x310Logo.scale-140.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square310x310Logo.scale-180.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\storelogo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\storelogo.scale-140.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\storelogo.scale-180.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\widelogo.scale-80.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\widelogo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\widelogo.scale-140.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\widelogo.scale-180.png">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>
