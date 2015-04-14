@@ -4,13 +4,15 @@
 #include "ofxStateMachine.h"
 #include "SharedData.h"
 #include "FlowState.h"
+#include "ofEvents.h"
+#include "EventHub.h"
 
 using namespace WindowsPreview::Kinect;
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp, public EventHub{
 
 	public:
 		void setup();

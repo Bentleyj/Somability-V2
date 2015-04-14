@@ -6,6 +6,7 @@
 #include "pch.h"
 #include "DirectXPage.xaml.h"
 #include "ofEvents.h"
+#include "src/EventHub.h"
 
 using namespace Somability_UI;
 
@@ -144,5 +145,6 @@ void DirectXPage::LoadInternalState(IPropertySet^ state)
 
 void Somability_UI::DirectXPage::Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	//ofNotifyEvent(ofEvents().buttonClick, buttonClickedArgs);
+	int buttonClickedArgs = 0;
+	ofNotifyEvent(EventHub::buttonClickEvent, buttonClickedArgs);
 }

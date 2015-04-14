@@ -138,6 +138,7 @@
     <ClInclude Include="DirectXPage.xaml.h">
       <DependentUpon>DirectXPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="src\EventHub.h" />
     <ClInclude Include="src\FlowState.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\SharedData.h" />
@@ -327,6 +328,7 @@
       <DependentUpon>DirectXPage.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="ofXamlAppMain.cpp" />
+    <ClCompile Include="src\EventHub.cpp" />
     <ClCompile Include="src\FlowState.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\SharedData.cpp" />

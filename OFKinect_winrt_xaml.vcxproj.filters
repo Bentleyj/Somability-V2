@@ -84,6 +84,9 @@
     <ClCompile Include="src\SharedData.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\EventHub.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.xaml.h" />
@@ -163,6 +166,9 @@
     <ClInclude Include="..\..\..\addons\ofxStateMachine\src\ofxState.h" />
     <ClInclude Include="..\..\..\addons\ofxStateMachine\src\ofxStateMachine.h" />
     <ClInclude Include="src\SharedData.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EventHub.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

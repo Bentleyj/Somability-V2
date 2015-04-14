@@ -8,6 +8,8 @@ void ofApp::setup()
 	//stateMachine.enableKeyEvents();
 	//stateMachine.enableMouseEvents();
 
+	setupEvents();
+
 	//set up variables in shared data
 
 	//add all the states
