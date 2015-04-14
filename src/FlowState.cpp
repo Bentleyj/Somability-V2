@@ -39,6 +39,8 @@ string FlowState::getName() {
 
 void FlowState::setup()
 {
+	setupEvents();
+
 	//if (!shader.load("shader"))
 	//	return;
 

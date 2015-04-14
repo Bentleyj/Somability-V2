@@ -87,6 +87,12 @@
     <ClCompile Include="src\EventHub.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\BalanceState.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReachState.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.xaml.h" />
@@ -169,6 +175,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\EventHub.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BalanceState.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ReachState.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

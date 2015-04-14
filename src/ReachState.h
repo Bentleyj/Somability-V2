@@ -1,5 +1,5 @@
 /*
- *  FlowState.h
+ *  ReachState.h
  *
  *  based on GreenState.h Copyright (c) 2011, Neil Mendoza, http://www.neilmendoza.com
  *  All rights reserved. 
@@ -31,45 +31,67 @@
  */
 #pragma once
 
-//#include "SomabilityApp.h"
-#include "Trail.h"
 #include "EventHub.h"
 
-using namespace WindowsPreview::Kinect;
-using namespace Platform;
-using namespace Platform::Collections;
-using namespace Windows::Foundation;
-using namespace Windows::Foundation::Collections;
-using namespace std;
-
-class FlowState : public ofBaseApp, public EventHub
-	//: public SomabilityApp
+class ReachState : public EventHub
 {
 public:
 	void setup();
 	void update();
 	void draw();
 	string getName();
-#if 0
+
+	/*
+    void keyPressed(int key);
+	void setupGui(SomabilityGui *gui);
+
 	void mouseReleased(int x, int y, int button);
-	void mouseMoved(int x, int y, int button);
-	string getName();
-	void stateEnter();
-	void stateExit();
-#endif	
+    vector    <ofPtr<ofxBox2dBaseShape> >	shapes;		  //	default box2d circles
+	void drawShape(int shapeId, ofRectangle &rect);
+	float shapeSize;
+	enum ShapeID {
+		
+		SQUARE,
+		TRIANGLE,
+		HEXAGON,
+		CIRCLE,
+		NUM_SHAPES,
+		NO_SHAPE
+	};
+	
+	map<ShapeID, ofImage> shapeImages;
 
-	map<int, Trail> trails;
+	class ShapeData {
+	public:
+		float birthday;
+		ShapeID type;
+		ShapeData(ShapeID type = TRIANGLE, float birthday = 0) {
+			this->birthday = birthday;
+			this->type = type;
+		}
+	};
+	
+	
+	void addShape(ShapeID name, ofVec2f pos);
+	
+		
+	map<ofxBox2dBaseShape*,ShapeData> data;
+	bool shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape);
+	void setColorForShape(ShapeID t);
+	
+	
+	vector<pair<ShapeID,ofRectangle> > triggers;
 
-	//void userEvent(ofxOpenNIUserEvent & event);
-private:
+	enum Hand {
+		LEFT_HAND,
+		RIGHT_HAND
+	};
+	
+	ShapeID handTouching[2];
 
-	ofTexture _tex;
-	ofImage _img;
-
-	Array<CameraSpacePoint>^ _camSpacePoints;
-	Array<ColorSpacePoint>^ _colSpacePoints;
-
-	unsigned int _bytesPerPixel;
-	bool _colorFrameProcessed;
-	bool _bodiesProcessed;
+	
+	void handMoved(ofVec2f p, Hand hand);
+	void mouseMoved(int x, int y);
+	void drawFluffBall(ofVec2f p, float radius);
+	*/
 };

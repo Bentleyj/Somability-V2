@@ -1,5 +1,5 @@
 /*
- *  FlowState.h
+ *  BalanceState.h
  *
  *  based on GreenState.h Copyright (c) 2011, Neil Mendoza, http://www.neilmendoza.com
  *  All rights reserved. 
@@ -31,45 +31,65 @@
  */
 #pragma once
 
-//#include "SomabilityApp.h"
-#include "Trail.h"
 #include "EventHub.h"
 
-using namespace WindowsPreview::Kinect;
-using namespace Platform;
-using namespace Platform::Collections;
-using namespace Windows::Foundation;
-using namespace Windows::Foundation::Collections;
-using namespace std;
-
-class FlowState : public ofBaseApp, public EventHub
-	//: public SomabilityApp
+class BalanceState : public EventHub
 {
 public:
+	
+	
 	void setup();
 	void update();
 	void draw();
+	//void mouseReleased(int x, int y, int button);
 	string getName();
-#if 0
-	void mouseReleased(int x, int y, int button);
-	void mouseMoved(int x, int y, int button);
-	string getName();
+
+	/*
 	void stateEnter();
 	void stateExit();
-#endif	
+	void shoot();
+	void tryToFire();
+	ofSoundPlayer boing;
 
-	map<int, Trail> trails;
+	void setupGui(SomabilityGui *gui);
 
-	//void userEvent(ofxOpenNIUserEvent & event);
-private:
-
-	ofTexture _tex;
-	ofImage _img;
-
-	Array<CameraSpacePoint>^ _camSpacePoints;
-	Array<ColorSpacePoint>^ _colSpacePoints;
-
-	unsigned int _bytesPerPixel;
-	bool _colorFrameProcessed;
-	bool _bodiesProcessed;
+	ofSoundStream soundStream;
+	void audioIn(float *samples, int length, int numChannels);
+	void keyPressed(int k);
+	float volume;
+	int audioFramesSinceLastFired;
+	int MIN_FRAMES_BETWEEN_FIRES;
+	bool mustFire;
+	ofImage gun;
+	ofImage circle;
+	ofxCvGrayscaleImage greyImg;
+	ofxCvContourFinder contours;
+	vector<ofxBox2dEdge *> persons;
+	unsigned char *buff;
+	
+	float shootingAngle;
+	///////////////////////////////////////////////////////////////////////////////////////
+	// BOX2D stuff
+	
+	vector    <ofPtr<ofxBox2dBaseShape> >	shapes;		  //	default box2d circles
+	
+	
+	class ShapeData {
+	public:
+		float birthday;
+		
+		ShapeData(float birthday = 0) {
+			this->birthday = birthday;
+		}
+	};
+	
+	map<ofxBox2dBaseShape*,ShapeData> data;
+	bool shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape);
+	//
+	///////////////////////////////////////////////////////////////////////////////////////
+	float MAX_SHAPE_AGE;
+	float sensitivity;
+	float displayVolume;
+*/
 };
+

@@ -10,13 +10,11 @@
 ofEvent<string> EventHub::buttonClickEvent;
 
 void EventHub::setupEvents() {
-
 	ofAddListener(buttonClickEvent, this, &EventHub::swapState);
 }
 
 void EventHub::swapState(string& arg) {
-	//std::string argNew(arg.c_str());
-	//std::wstring_convert(arg.c_str());
+
 	changeState(arg);
 }
 

@@ -8,17 +8,17 @@ void ofApp::setup()
 	//stateMachine.enableKeyEvents();
 	//stateMachine.enableMouseEvents();
 
-	setupEvents();
-
 	//set up variables in shared data
 
 	//add all the states
 	stateMachine.addState<FlowState>();
+	stateMachine.addState<BalanceState>();
+	stateMachine.addState<ReachState>();
 
 	stateMachine.getSharedData().setupKinect(FrameSourceTypes::Color | FrameSourceTypes::Body);
 
 	//set initial state
-	stateMachine.changeState("flow");
+	stateMachine.changeState("balance");
 
 	//stateMachine.getSharedData().setupKinect(Frame);
 }

@@ -138,9 +138,11 @@
     <ClInclude Include="DirectXPage.xaml.h">
       <DependentUpon>DirectXPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="src\BalanceState.h" />
     <ClInclude Include="src\EventHub.h" />
     <ClInclude Include="src\FlowState.h" />
     <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="src\ReachState.h" />
     <ClInclude Include="src\SharedData.h" />
     <ClInclude Include="src\Trail.h" />
     <ClInclude Include="..\..\..\addons\ofxBox2d\src\ofxBox2d.h" />
@@ -328,9 +330,11 @@
       <DependentUpon>DirectXPage.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="ofXamlAppMain.cpp" />
+    <ClCompile Include="src\BalanceState.cpp" />
     <ClCompile Include="src\EventHub.cpp" />
     <ClCompile Include="src\FlowState.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="src\ReachState.cpp" />
     <ClCompile Include="src\SharedData.cpp" />
     <ClCompile Include="src\Trail.cpp" />
     <ClCompile Include="..\..\..\addons\ofxBox2d\src\ofxBox2d.cpp" />

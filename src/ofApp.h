@@ -6,13 +6,15 @@
 #include "FlowState.h"
 #include "ofEvents.h"
 #include "EventHub.h"
+#include "BalanceState.h"
+#include "ReachState.h"
 
 using namespace WindowsPreview::Kinect;
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 
-class ofApp : public ofBaseApp, public EventHub{
+class ofApp : public ofBaseApp {
 
 	public:
 		void setup();
