@@ -5,10 +5,14 @@
 void ofApp::setup()
 {
 	//enable events for all states
-	//stateMachine.enableKeyEvents();
-	//stateMachine.enableMouseEvents();
+	stateMachine.enableKeyEvents();
+	stateMachine.enableMouseEvents();
 
 	//set up variables in shared data
+	stateMachine.getSharedData().box2d->init();
+	stateMachine.getSharedData().box2d->setGravity(0, 10);
+	stateMachine.getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());
+	stateMachine.getSharedData().box2d->setFPS(30.0);
 
 	//add all the states
 	stateMachine.addState<FlowState>();
@@ -16,6 +20,11 @@ void ofApp::setup()
 	stateMachine.addState<ReachState>();
 
 	stateMachine.getSharedData().setupKinect(FrameSourceTypes::Color | FrameSourceTypes::Body);
+
+	int width = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Width;
+	int height = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Height;
+
+	stateMachine.getSharedData().setImageTransform(width, height, ofGetWidth(), ofGetHeight());
 
 	//set initial state
 	stateMachine.changeState("balance");

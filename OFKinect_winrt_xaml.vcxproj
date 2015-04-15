@@ -317,6 +317,8 @@
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Assets\widelogo.scale-80.png" />
+    <Image Include="data\circle.png" />
+    <Image Include="data\gun.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXHelper.h" />

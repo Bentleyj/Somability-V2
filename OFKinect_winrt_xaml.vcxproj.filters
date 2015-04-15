@@ -330,5 +330,11 @@
     <Image Include="Assets\widelogo.scale-180.png">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="data\circle.png">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="data\gun.png">
+      <Filter>data</Filter>
+    </Image>
   </ItemGroup>
 </Project>

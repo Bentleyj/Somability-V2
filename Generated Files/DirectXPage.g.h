@@ -13,7 +13,6 @@ namespace Windows {
         namespace Xaml {
             namespace Controls {
                 ref class SwapChainBackgroundPanel;
-                ref class TextBlock;
             }
         }
     }
@@ -32,7 +31,6 @@ namespace Somability_UI
         bool _contentLoaded;
     
         private: ::Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ SwapChainPanel;
-        private: ::Windows::UI::Xaml::Controls::TextBlock^ SimpleTextBlock;
     };
 }
 

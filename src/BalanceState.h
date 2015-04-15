@@ -32,6 +32,8 @@
 #pragma once
 
 #include "EventHub.h"
+//#include "Box2D.h"
+#include "ofxBox2d.h"
 
 class BalanceState : public EventHub
 {
@@ -44,17 +46,17 @@ public:
 	//void mouseReleased(int x, int y, int button);
 	string getName();
 
-	/*
-	void stateEnter();
-	void stateExit();
+	//void stateEnter();
+	//void stateExit();
 	void shoot();
 	void tryToFire();
+	void addWall();
 	ofSoundPlayer boing;
 
-	void setupGui(SomabilityGui *gui);
+	//void setupGui(SomabilityGui *gui);
 
 	ofSoundStream soundStream;
-	void audioIn(float *samples, int length, int numChannels);
+	//void audioIn(float *samples, int length, int numChannels);
 	void keyPressed(int k);
 	float volume;
 	int audioFramesSinceLastFired;
@@ -62,9 +64,13 @@ public:
 	bool mustFire;
 	ofImage gun;
 	ofImage circle;
-	ofxCvGrayscaleImage greyImg;
-	ofxCvContourFinder contours;
-	vector<ofxBox2dEdge *> persons;
+
+	ofImage _img;
+	//ofxCvGrayscaleImage greyImg;
+	//ofxCvContourFinder contours;
+
+	std::map<int, vector<ofxBox2dEdge*> *> persons;
+	ofxBox2dEdge wall;
 	unsigned char *buff;
 	
 	float shootingAngle;
@@ -72,6 +78,12 @@ public:
 	// BOX2D stuff
 	
 	vector    <ofPtr<ofxBox2dBaseShape> >	shapes;		  //	default box2d circles
+
+	Array<CameraSpacePoint>^ _camSpacePoints;
+	Array<ColorSpacePoint>^ _colSpacePoints;
+
+	vector<int> trackedIds;
+	vector<int> IdsToDelete;
 	
 	
 	class ShapeData {
@@ -90,6 +102,5 @@ public:
 	float MAX_SHAPE_AGE;
 	float sensitivity;
 	float displayVolume;
-*/
 };
 

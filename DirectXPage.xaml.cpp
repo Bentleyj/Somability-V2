@@ -155,6 +155,9 @@ void Somability_UI::DirectXPage::Button_Click(Platform::Object^ sender, Windows:
 	auto button = dynamic_cast<Windows::UI::Xaml::Controls::Button^>(sender);
 	std::string arguments = ws2s(button->Tag->ToString()->Data());
 	ofNotifyEvent(EventHub::buttonClickEvent, arguments);
+
+	TopAppBar->SetValue(AppBar::IsOpenProperty, false);
+	BottomAppBar->SetValue(AppBar::IsOpenProperty, false);
 }
 
 

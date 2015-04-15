@@ -6,11 +6,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <SwapChainBackgroundPanel x:ConnectionId='1' x:Name="SwapChainPanel"                                                                  >
-        <TextBlock x:Name="SimpleTextBlock" HorizontalAlignment="Center" FontSize="42" Height="72" Text="Hello, XAML!" Margin="0,0,0,50"/>
     </SwapChainBackgroundPanel>
 
     <Page.TopAppBar>
-        <AppBar>
+        <AppBar IsOpen="True">
 
             <Image Source="/Assets/somability-logo.png" Margin="0,30,0,30" Height="144"/>
 
@@ -19,7 +18,7 @@
 
 
     <Page.BottomAppBar>
-        <AppBar>
+        <AppBar IsOpen="True">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 

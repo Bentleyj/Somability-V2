@@ -63,9 +63,13 @@ void SharedData::closeKinect() {
 	_kinect->Close();
 }
 
-bool SharedData::setColorImage(ofImage& img) {
-	_frameProcessed = false;
+MultiSourceFrame^ SharedData::getMultiSourceFrame() {
 	auto multiFrame = _multiFrameReader->AcquireLatestFrame();
+	return multiFrame;
+}
+
+bool SharedData::setColorImage(ofImage& img, MultiSourceFrame^ multiFrame) {
+	_frameProcessed = false;
 	if (multiFrame != nullptr)
 	{
 		if (multiFrame->ColorFrameReference != nullptr)
@@ -88,12 +92,11 @@ bool SharedData::setColorImage(ofImage& img) {
 	return _frameProcessed;
 }
 
-Vector<Body^>^ SharedData::getBodies() {
+Vector<Body^>^ SharedData::getBodies(MultiSourceFrame^ multiFrame) {
 	 _frameProcessed = false;
-	auto multiFrame = _multiFrameReader->AcquireLatestFrame();
 	if (multiFrame != nullptr)
 	{
-		if (multiFrame->ColorFrameReference != nullptr)
+		if (multiFrame->BodyFrameReference != nullptr)
 		{
 			auto bodyFrame = multiFrame->BodyFrameReference->AcquireFrame();
 
@@ -108,6 +111,27 @@ Vector<Body^>^ SharedData::getBodies() {
 		}
 	}
 	return nullptr;
+}
+
+void SharedData::setImageTransform(int width, int height, int targetWidth, int targetHeight) {
+	float xScale = (float)targetWidth / width;
+	float yScale = (float)targetHeight / height;
+	pair<ofPoint, float> returnTransform;
+	//float scale = std::min(xScale, yScale);
+	if (xScale <= yScale) {
+		float scale = xScale;
+		int x = 0;
+		int y = (targetHeight - height*scale) / 2;
+		ofPoint loc(x, y);
+		imgTransform = make_pair(loc, scale);
+	}
+	else {
+		float scale = yScale;
+		int y = 0;
+		int x = (targetWidth - width*scale) / 2;
+		ofPoint loc(x, y);
+		imgTransform = make_pair(loc, scale);
+	}
 }
 
 

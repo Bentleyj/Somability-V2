@@ -24,8 +24,6 @@ void ::Somability_UI::DirectXPage::InitializeComponent()
 
     // Get the SwapChainBackgroundPanel named 'SwapChainPanel'
     SwapChainPanel = safe_cast<::Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^>(static_cast<Windows::UI::Xaml::IFrameworkElement^>(this)->FindName(L"SwapChainPanel"));
-    // Get the TextBlock named 'SimpleTextBlock'
-    SimpleTextBlock = safe_cast<::Windows::UI::Xaml::Controls::TextBlock^>(static_cast<Windows::UI::Xaml::IFrameworkElement^>(this)->FindName(L"SimpleTextBlock"));
 }
 
 void ::Somability_UI::DirectXPage::Connect(int connectionId, Platform::Object^ target)

@@ -30,13 +30,44 @@
  *
  */
 #include "BalanceState.h"
+
+#define WIDTH ofGetWidth()
+#define HEIGHT ofGetHeight()
+
+
+void BalanceState::addWall() {
+	wall[0].x += 100;
+	wall[0].y += 100;
+	//wall.addVertex(ofRandom(ofGetWidth()/2), ofRandom(ofGetHeight()));
+	//wall.addVertex(ofRandom(ofGetWidth()/2), ofRandom(ofGetHeight()));
+	//wall.simplify(5);
+	wall.setPhysics(0, 0, 0);
+	wall.create(getSharedData().box2d->getWorld());
+	wall.flagHasChanged();
+	wall.updateShape();
+}
+
 void BalanceState::setup() {
 	setupEvents();
-	//gun.loadImage("img/gun.png");
-	//circle.loadImage("img/circle.png");
-	//circle.setAnchorPercent(0.5, 0.5);
-	//gun.setAnchorPercent(0.5, 0.5);
-	//sensitivity = 50;
+	gun.loadImage("gun.png");
+	circle.loadImage("circle.png");
+	circle.setAnchorPercent(0.5, 0.5);
+	gun.setAnchorPercent(0.5, 0.5);
+	sensitivity = 50;
+
+	//persons.resize(144);
+
+	_camSpacePoints = ref new Array<CameraSpacePoint>(2);
+	_colSpacePoints = ref new Array<ColorSpacePoint>(2);
+
+	wall.addVertex(0, 0);
+	wall.addVertex(200, 200);
+	wall.simplify(5);
+	wall.setPhysics(0, 0, 0);
+	wall.create(getSharedData().box2d->getWorld());
+	wall.flagHasChanged();
+	wall.updateShape();
+
 	//
 	//if(ofFile("micSensitivity.txt").exists()) {
 	//	sensitivity = ofToInt(ofBufferFromFile("micSensitivity.txt").getText());
@@ -57,43 +88,128 @@ void BalanceState::setup() {
 	//buff = new unsigned char[VISION_WIDTH*VISION_HEIGHT];
 }
 
-//void BalanceState::shoot() {
-//	ofxBox2dCircle *c = new ofxBox2dCircle();
-//	
-//	float r = ofRandom(23, 28);
-//	c->setPhysics(3.0, 0.53, 0.1);
-//	c->setup(getSharedData().box2d->getWorld(), WIDTH, HEIGHT/2, r);
-//	ofVec2f v(-20,0);
-//	v.rotateRad(shootingAngle);
-//	c->setVelocity(v);
-//	shapes.push_back(ofPtr<ofxBox2dBaseShape>(c));
-//	data[c] = ShapeData(ofGetElapsedTimef());
-//
-//}
+void BalanceState::shoot() {
+	ofxBox2dCircle *c = new ofxBox2dCircle();
+	
+	float r = ofRandom(23, 28);
+	c->setPhysics(3.0, 0.53, 0.1);
+	c->setup(getSharedData().box2d->getWorld(), WIDTH, HEIGHT/2, r);
+	ofVec2f v(-20,0);
+	v.rotateRad(shootingAngle);
+	c->setVelocity(v);
+	shapes.push_back(ofPtr<ofxBox2dBaseShape>(c));
+	data[c] = ShapeData(ofGetElapsedTimef());
+
+}
 
 
-//bool BalanceState::shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape) {
-//	if(data.find(shape)!=data.end()) {
-//		return (currTime - data[shape].birthday)>MAX_SHAPE_AGE;
-//	}
-//	return false;
-//}
+bool BalanceState::shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape) {
+	if(data.find(shape)!=data.end()) {
+		return (currTime - data[shape].birthday)>MAX_SHAPE_AGE;
+	}
+	return false;
+}
 
 
 void BalanceState::update()
 {
-	
-	//shootingAngle = ofMap(sin(ofGetElapsedTimef()/3), -1, 1, -PI/8, PI/4);
-	//
-	//if(mustFire) {
+	trackedIds.clear();
+	IdsToDelete.clear();
+
+	shootingAngle = ofMap(sin(ofGetElapsedTimef()/3), -1, 1, -PI/8, PI/4);
+
+	if(mustFire) {
 	//	boing.play();
-	//	shoot();
-	//	
-	//	
-	//	mustFire = false;
-	//}
-	//
-	//int numUsers = getSharedData().openNIDevice.getNumTrackedUsers();
+		shoot();
+		mustFire = false;
+	}
+
+	auto multiFrame = getSharedData().getMultiSourceFrame();
+	auto bodies = getSharedData().getBodies(multiFrame);
+	getSharedData().setColorImage(_img, multiFrame);
+
+	if (bodies != nullptr) {
+		for (auto body : bodies) {
+			if (!body->IsTracked) 
+				continue;
+			auto it = persons.find(body->TrackingId);
+			vector<ofxBox2dEdge*> * edges;
+			if (it != persons.end()) {
+				edges = (*it).second;
+				for (int boneIdx = 0; boneIdx < 24; boneIdx++)
+				{
+					auto j1 = SharedData::Limbs[boneIdx][0];
+					auto j2 = SharedData::Limbs[boneIdx][1];
+
+					auto joint1 = body->Joints->Lookup(j1);
+					auto joint2 = body->Joints->Lookup(j2);
+
+					auto cm = getSharedData().getCoordinateMapper();
+					_camSpacePoints[0] = joint1.Position;
+					_camSpacePoints[1] = joint2.Position;
+
+					cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
+
+					auto edge = (*edges)[boneIdx];
+					(*edge)[0].x = _colSpacePoints[0].X;
+					(*edge)[0].y = _colSpacePoints[0].Y;
+					(*edge)[1].x = _colSpacePoints[1].X;
+					(*edge)[1].y = _colSpacePoints[1].Y;
+				}
+				persons[body->TrackingId] = edges;
+			}
+			else {
+				edges = new vector<ofxBox2dEdge*>();
+
+				for (int boneIdx = 0; boneIdx < 24; boneIdx++)
+				{
+					auto j1 = SharedData::Limbs[boneIdx][0];
+					auto j2 = SharedData::Limbs[boneIdx][1];
+
+					auto joint1 = body->Joints->Lookup(j1);
+					auto joint2 = body->Joints->Lookup(j2);
+
+					auto cm = getSharedData().getCoordinateMapper();
+					_camSpacePoints[0] = joint1.Position;
+					_camSpacePoints[1] = joint2.Position;
+
+					cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
+
+					ofxBox2dEdge* edge = new ofxBox2dEdge();
+					edge->addVertex(ofPoint(_colSpacePoints[0].X, _colSpacePoints[0].Y));
+					edge->addVertex(ofPoint(_colSpacePoints[1].X, _colSpacePoints[1].Y));
+					edges->push_back(edge);
+				}
+				persons[body->TrackingId] = edges;
+			}
+
+			trackedIds.push_back(body->TrackingId);
+		}
+		for (auto person : persons) {
+			if (std::find(trackedIds.begin(), trackedIds.end(), person.first) != trackedIds.end()) {
+				for (auto bone : *person.second) {
+					bone->simplify(5);
+					bone->setPhysics(0, 0, 0);
+					bone->create(getSharedData().box2d->getWorld());
+					bone->flagHasChanged();
+					bone->updateShape();
+				}
+			}
+			else {
+				IdsToDelete.push_back(person.first);
+			}
+		}
+
+		for (auto IdToDelete : IdsToDelete) {
+			for (auto edge : *persons.find(IdToDelete)->second) {
+				getSharedData().box2d->getWorld()->DestroyBody(edge->body);
+			}
+			persons.erase(IdToDelete);
+		}
+	}
+	
+	getSharedData().box2d->update();
+
 	//greyImg.set(0);
 	//unsigned char *pix = greyImg.getPixels();
 	//memset(buff, 0, VISION_WIDTH*VISION_HEIGHT);
@@ -153,21 +269,17 @@ void BalanceState::update()
 	//}
 	//
 	//getSharedData().box2d->update();
- //   
- //   // remove shapes offscreen
- //   //ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
-	//float currTime = ofGetElapsedTimef();
-	//for(int i =0 ; i < shapes.size(); i++) {
-	//	if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) || shapeIsTooOld(currTime, shapes[i].get())) {
-	//		data.erase(shapes[i].get());
-	//		shapes.erase(shapes.begin() + i);
-	//		i--;
-	//	}
-	//}
-	//
-	//
-	//
-	//
+
+	// remove shapes offscreen
+    ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
+	float currTime = ofGetElapsedTimef();
+	for(int i =0 ; i < shapes.size(); i++) {
+		if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) || shapeIsTooOld(currTime, shapes[i].get())) {
+			data.erase(shapes[i].get());
+			shapes.erase(shapes.begin() + i);
+			i--;
+		}
+	}
 }
 //void BalanceState::setupGui(SomabilityGui *gui) {
 //	gui->addSlider("sensitivity", sensitivity, 0, 1);
@@ -177,7 +289,18 @@ void BalanceState::update()
 void BalanceState::draw()
 {
 	ofDrawBitmapString("balance", 30, 30);
-	//changeState("reach");
+
+	ofPushMatrix();
+	ofNoFill();
+	ofSetColor(255);
+	ofTranslate(getSharedData().imgTransform.first);
+	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
+	ofSetColor(255);
+	_img.draw(0, 0);
+	//ofSetColor(0);
+	//ofDrawBitmapString(ofToString(persons.size()), 30, 30);
+	ofDrawBitmapString(ofToString(getSharedData().box2d->getWorld()->GetBodyCount()), 30, 30);
+
 	//getSharedData().drawCorrectDisplayMode();
 	//glPushMatrix();
 	//
@@ -196,19 +319,30 @@ void BalanceState::draw()
 	//ofSetColor(ofColor::white);
 	//
 
- //   for(int i=0; i<shapes.size(); i++) {
-	//	ofxBox2dCircle *c = (ofxBox2dCircle*) shapes[i].get();
-	//	circle.draw(c->getPosition().x, c->getPosition().y, c->getRadius()*2, c->getRadius()*2);
-	//	//shapes[i].get()->draw();
-	//}
-	//
-	//// draw the cannon
-	//ofPushMatrix();
-	//ofTranslate(WIDTH,HEIGHT/2, 0);
-	//ofRotate(ofRadToDeg(shootingAngle),0,0,1);
-	//ofSetColor(255);
-	//gun.draw(0,0);
-	//ofPopMatrix();
+    for(int i=0; i<shapes.size(); i++) {
+		ofxBox2dCircle *c = (ofxBox2dCircle*) shapes[i].get();
+		circle.draw(c->getPosition().x, c->getPosition().y, c->getRadius()*2, c->getRadius()*2);
+		shapes[i].get()->draw();
+	}
+
+	for (auto person : persons) {
+		ofSetColor(255);
+		ofSetLineWidth(20);
+		for (auto edge : *person.second) {
+			edge->draw();
+		}
+	}
+	wall.draw();
+	ofPopMatrix();
+
+
+	// draw the cannon
+	ofPushMatrix();
+	ofTranslate(WIDTH,HEIGHT/2, 0);
+	ofRotate(ofRadToDeg(shootingAngle),0,0,1);
+	ofSetColor(255);
+	gun.draw(0,0);
+	ofPopMatrix();
 	//// contours.draw();
 
 	//ofSetColor(255);
@@ -221,15 +355,17 @@ string BalanceState::getName()
 	return "balance";
 }
 
-//void BalanceState::mouseReleased(int x, int y, int button)
-//{
-//	changeState("choice");
-//	//mustFire = true;
-//}
+void BalanceState::keyPressed(int k)
+{
+	//changeState("choice");
+	if (k == 'f') tryToFire();
+	if (k == 'w') addWall();
+	//mustFire = true;
+}
 //
-//void BalanceState::tryToFire() {
-//	mustFire = true;
-//}
+void BalanceState::tryToFire() {
+	mustFire = true;
+}
 //
 //
 //void BalanceState::audioIn(float *samples, int length, int numChannels) {

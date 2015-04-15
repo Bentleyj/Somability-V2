@@ -44,7 +44,7 @@ void FlowState::setup()
 	//if (!shader.load("shader"))
 	//	return;
 
-	getSharedData().setupKinect(FrameSourceTypes::Color | FrameSourceTypes::Body);
+	//getSharedData().setupKinect(FrameSourceTypes::Color | FrameSourceTypes::Body);
 
 	_camSpacePoints = ref new Array<CameraSpacePoint>(2);
 	_colSpacePoints = ref new Array<ColorSpacePoint>(2);
@@ -52,61 +52,61 @@ void FlowState::setup()
 
 void FlowState::update()
 {
-	_bodiesProcessed = false;
-	_colorFrameProcessed = false;
+	auto multiFrame = getSharedData().getMultiSourceFrame();
+	auto bodies = getSharedData().getBodies(multiFrame);
+	getSharedData().setColorImage(_img, multiFrame);
 
-	getSharedData().setColorImage(_img);
-	auto bodies = getSharedData().getBodies();
 
-	if (bodies != nullptr)
+	if (bodies == nullptr)
 		return;
 
-	//int id = 0;
-	//for (auto body : bodies)
-	//{
-	//	if (!body->IsTracked)
-	//		continue;
-	//	auto camsp = ref new Array<CameraSpacePoint>(body->JointCount);
 
-	//	for (int boneIdx = 0; boneIdx < 24; boneIdx++)
-	//	{
-	//		auto j1 = SharedData::Limbs[boneIdx][0];
-	//		auto j2 = SharedData::Limbs[boneIdx][1];
+	int id = 0;
+	for (auto body : bodies)
+	{
+		if (!body->IsTracked)
+			continue;
+		auto camsp = ref new Array<CameraSpacePoint>(body->JointCount);
 
-	//		auto joint1 = body->Joints->Lookup(j1);
-	//		auto joint2 = body->Joints->Lookup(j2);
+		for (int boneIdx = 0; boneIdx < 24; boneIdx++)
+		{
+			auto j1 = SharedData::Limbs[boneIdx][0];
+			auto j2 = SharedData::Limbs[boneIdx][1];
 
-	//		auto cm = _kinect->CoordinateMapper;
-	//		_camSpacePoints[0] = joint1.Position;
-	//		_camSpacePoints[1] = joint2.Position;
+			auto joint1 = body->Joints->Lookup(j1);
+			auto joint2 = body->Joints->Lookup(j2);
 
-	//		cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
+			auto cm = getSharedData().getCoordinateMapper();
+			_camSpacePoints[0] = joint1.Position;
+			_camSpacePoints[1] = joint2.Position;
 
-	//		auto x = _colSpacePoints[1].X - _colSpacePoints[0].X;
-	//		auto y = _colSpacePoints[1].Y - _colSpacePoints[0].Y;
+			cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
 
-	//		ofVec3f limbLength = ofVec3f(x, y);
-	//		ofVec3f joint1Pos = ofVec3f(_colSpacePoints[0].X, _colSpacePoints[0].Y);
+			auto x = _colSpacePoints[1].X - _colSpacePoints[0].X;
+			auto y = _colSpacePoints[1].Y - _colSpacePoints[0].Y;
 
-	//		for (int k = 0; k < NUM_TRAILS_PER_LIMB; k++)
-	//		{
-	//			int myId = id * 10000 + boneIdx * 100 + k;
-	//			float p = (float) k / NUM_TRAILS_PER_LIMB;
+			ofVec3f limbLength = ofVec3f(x, y);
+			ofVec3f joint1Pos = ofVec3f(_colSpacePoints[0].X, _colSpacePoints[0].Y);
 
-	//			trails[myId].update(joint1Pos + limbLength * p);
-	//		}
-	//	}
+			for (int k = 0; k < NUM_TRAILS_PER_LIMB; k++)
+			{
+				int myId = id * 10000 + boneIdx * 100 + k;
+				float p = (float) k / NUM_TRAILS_PER_LIMB;
 
-	//	id++;
-	//}
-	//if (id > 0)
-	//{
-	//	map<int, Trail>::iterator it = trails.begin();
-	//	while (it != trails.end()) {
-	//		(*it).second.update2();
-	//		it++;
-	//	}
-	//}
+				trails[myId].update(joint1Pos + limbLength * p);
+			}
+		}
+
+		id++;
+	}
+	if (id > 0)
+	{
+		map<int, Trail>::iterator it = trails.begin();
+		while (it != trails.end()) {
+			(*it).second.update2();
+			it++;
+		}
+	}
 }
 
 void FlowState::draw()
@@ -120,8 +120,13 @@ void FlowState::draw()
 		return;
 	}
 
+	ofPushMatrix();
+	ofTranslate(getSharedData().imgTransform.first);
+	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
 	ofSetColor(255);
-	_img.draw(0, 0, ofGetWidth(), ofGetHeight());
+	_img.draw(0, 0);
+	//_img.draw()
+	ofPopMatrix();
 
 	ofSetColor(0);
 	
