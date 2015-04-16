@@ -4,7 +4,7 @@ const JointType SharedData::Limbs[24][2] = {
 	{ JointType::FootRight, JointType::AnkleRight },
 	{ JointType::AnkleRight, JointType::KneeRight },
 	{ JointType::KneeRight, JointType::HipRight },
-	{ JointType::HipRight, JointType::SpineMid },
+	{ JointType::HipRight, JointType::SpineBase },
 	{ JointType::FootLeft, JointType::AnkleLeft },
 	{ JointType::AnkleLeft, JointType::KneeLeft },
 	{ JointType::KneeLeft, JointType::HipLeft },

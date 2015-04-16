@@ -35,16 +35,19 @@
 #define HEIGHT ofGetHeight()
 
 
-void BalanceState::addWall() {
-	wall[0].x += 100;
-	wall[0].y += 100;
-	//wall.addVertex(ofRandom(ofGetWidth()/2), ofRandom(ofGetHeight()));
-	//wall.addVertex(ofRandom(ofGetWidth()/2), ofRandom(ofGetHeight()));
+void BalanceState::buildWalls() {
+	for (int i = 0; i < 24; i++) {
+		walls[i].addVertex(0, 0);
+		walls[i].addVertex(ofRandom(ofGetWidth()/2), ofRandom(ofGetHeight()));
+		walls[i].setPhysics(0, 0, 0);
+		walls[i].create(getSharedData().box2d->getWorld());
+		walls[i].flagHasChanged();
+		walls[i].updateShape();
+	}
+
+
 	//wall.simplify(5);
-	wall.setPhysics(0, 0, 0);
-	wall.create(getSharedData().box2d->getWorld());
-	wall.flagHasChanged();
-	wall.updateShape();
+
 }
 
 void BalanceState::setup() {
@@ -60,13 +63,7 @@ void BalanceState::setup() {
 	_camSpacePoints = ref new Array<CameraSpacePoint>(2);
 	_colSpacePoints = ref new Array<ColorSpacePoint>(2);
 
-	wall.addVertex(0, 0);
-	wall.addVertex(200, 200);
-	wall.simplify(5);
-	wall.setPhysics(0, 0, 0);
-	wall.create(getSharedData().box2d->getWorld());
-	wall.flagHasChanged();
-	wall.updateShape();
+	//buildWalls();
 
 	//
 	//if(ofFile("micSensitivity.txt").exists()) {
@@ -124,13 +121,28 @@ void BalanceState::update()
 		mustFire = false;
 	}
 
+	//wall[0].x = 0;
+	//wall[0].y = 0;
+	//wall[1].x = ofGetMouseX();
+	//wall[1].y = ofGetMouseY();
+
+	//for (int j = 0; j < 6; j++) {
+	//	for (int i = 0; i < 24; i++) {
+	//		walls[i][0].x = 0;
+	//		walls[i][0].y = 0;
+	//		walls[i][1].x = ofRandom(ofGetWidth());
+	//		walls[i][1].y = ofRandom(ofGetHeight());
+	//	}
+	//}
+
 	auto multiFrame = getSharedData().getMultiSourceFrame();
 	auto bodies = getSharedData().getBodies(multiFrame);
 	getSharedData().setColorImage(_img, multiFrame);
 
+	
 	if (bodies != nullptr) {
 		for (auto body : bodies) {
-			if (!body->IsTracked) 
+			if (!body->IsTracked)
 				continue;
 			auto it = persons.find(body->TrackingId);
 			vector<ofxBox2dEdge*> * edges;
@@ -149,16 +161,14 @@ void BalanceState::update()
 					_camSpacePoints[1] = joint2.Position;
 
 					cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
-
 					auto edge = (*edges)[boneIdx];
-					(*edge)[0].x = _colSpacePoints[0].X;
-					(*edge)[0].y = _colSpacePoints[0].Y;
-					(*edge)[1].x = _colSpacePoints[1].X;
-					(*edge)[1].y = _colSpacePoints[1].Y;
+					(*edge)[0].x = (_colSpacePoints[0].X < 0.1) ? 0 : _colSpacePoints[0].X;
+					(*edge)[0].y = (_colSpacePoints[0].Y < 0.1) ? 0 : _colSpacePoints[0].Y;
+					(*edge)[1].x = (_colSpacePoints[1].X < 0.1) ? 0 : _colSpacePoints[1].X;
+					(*edge)[1].y = (_colSpacePoints[1].Y < 0.1) ? 0 : _colSpacePoints[1].Y;
 				}
 				persons[body->TrackingId] = edges;
-			}
-			else {
+			} else {
 				edges = new vector<ofxBox2dEdge*>();
 
 				for (int boneIdx = 0; boneIdx < 24; boneIdx++)
@@ -176,6 +186,10 @@ void BalanceState::update()
 					cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
 
 					ofxBox2dEdge* edge = new ofxBox2dEdge();
+					_colSpacePoints[0].X = (_colSpacePoints[0].X < 0.1) ? 0 : _colSpacePoints[0].X;
+					_colSpacePoints[0].Y = (_colSpacePoints[0].Y < 0.1) ? 0 : _colSpacePoints[0].Y;
+					_colSpacePoints[1].X = (_colSpacePoints[1].X < 0.1) ? 0 : _colSpacePoints[1].X;
+					_colSpacePoints[1].Y = (_colSpacePoints[1].Y < 0.1) ? 0 : _colSpacePoints[1].Y;
 					edge->addVertex(ofPoint(_colSpacePoints[0].X, _colSpacePoints[0].Y));
 					edge->addVertex(ofPoint(_colSpacePoints[1].X, _colSpacePoints[1].Y));
 					edges->push_back(edge);
@@ -188,14 +202,13 @@ void BalanceState::update()
 		for (auto person : persons) {
 			if (std::find(trackedIds.begin(), trackedIds.end(), person.first) != trackedIds.end()) {
 				for (auto bone : *person.second) {
-					bone->simplify(5);
+					//bone->simplify(5);
 					bone->setPhysics(0, 0, 0);
 					bone->create(getSharedData().box2d->getWorld());
 					bone->flagHasChanged();
 					bone->updateShape();
 				}
-			}
-			else {
+			} else {
 				IdsToDelete.push_back(person.first);
 			}
 		}
@@ -271,15 +284,15 @@ void BalanceState::update()
 	//getSharedData().box2d->update();
 
 	// remove shapes offscreen
-    ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
-	float currTime = ofGetElapsedTimef();
-	for(int i =0 ; i < shapes.size(); i++) {
-		if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) || shapeIsTooOld(currTime, shapes[i].get())) {
-			data.erase(shapes[i].get());
-			shapes.erase(shapes.begin() + i);
-			i--;
-		}
-	}
+	//ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
+	////float currTime = ofGetElapsedTimef();
+	//for(int i =0 ; i < shapes.size(); i++) {
+	//	if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) /*|| shapeIsTooOld(currTime, shapes[i].get())*/) {
+	//		data.erase(shapes[i].get());
+	//		shapes.erase(shapes.begin() + i);
+	//		i--;
+	//	}
+	//}
 }
 //void BalanceState::setupGui(SomabilityGui *gui) {
 //	gui->addSlider("sensitivity", sensitivity, 0, 1);
@@ -332,7 +345,10 @@ void BalanceState::draw()
 			edge->draw();
 		}
 	}
-	wall.draw();
+	for (int i = 0; i < 24; i++) {
+		walls[i].draw();
+	}
+
 	ofPopMatrix();
 
 
@@ -359,7 +375,7 @@ void BalanceState::keyPressed(int k)
 {
 	//changeState("choice");
 	if (k == 'f') tryToFire();
-	if (k == 'w') addWall();
+	//if (k == 'w') addWall();
 	//mustFire = true;
 }
 //

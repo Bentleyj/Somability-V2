@@ -50,7 +50,8 @@ public:
 	//void stateExit();
 	void shoot();
 	void tryToFire();
-	void addWall();
+	void buildWalls();
+
 	ofSoundPlayer boing;
 
 	//void setupGui(SomabilityGui *gui);
@@ -70,7 +71,7 @@ public:
 	//ofxCvContourFinder contours;
 
 	std::map<int, vector<ofxBox2dEdge*> *> persons;
-	ofxBox2dEdge wall;
+	ofxBox2dEdge walls[24];
 	unsigned char *buff;
 	
 	float shootingAngle;
