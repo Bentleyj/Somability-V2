@@ -50,6 +50,9 @@ void SharedData::setupKinect(FrameSourceTypes  frameSourceTypes) {
 			_bodies = ref new Vector<Body^>(_kinect->BodyFrameSource->BodyCount);
 		}
 
+		AudioSource^ audioSource = _kinect->AudioSource;
+		_audioBuffer = ref new Array<byte>(audioSource->SubFrameLengthInBytes);
+		_audioReader = _kinect->AudioSource->OpenReader();
 
 		_kinect->Open();
 	}
@@ -62,6 +65,11 @@ bool SharedData::isKinectOpen() {
 void SharedData::closeKinect() {
 	_kinect->Close();
 }
+
+//Vector<AudioBeamFrame^>^ SharedData::getAudioBeamFrames() {
+//	auto audioFrames = _audioReader->AcquireLatestBeamFrames();
+//	return audioFrames;
+//}
 
 MultiSourceFrame^ SharedData::getMultiSourceFrame() {
 	auto multiFrame = _multiFrameReader->AcquireLatestFrame();
@@ -111,6 +119,16 @@ Vector<Body^>^ SharedData::getBodies(MultiSourceFrame^ multiFrame) {
 		}
 	}
 	return nullptr;
+}
+
+Array<byte>^ SharedData::getAudioFrame() {
+	auto audioFrames = _audioReader->AcquireLatestBeamFrames();
+	if (audioFrames == nullptr)
+		return nullptr;
+	for (auto subFrame : audioFrames->GetAt(0)->SubFrames) {
+		subFrame->CopyFrameDataToArray(_audioBuffer);
+	}
+	return _audioBuffer;
 }
 
 void SharedData::setImageTransform(int width, int height, int targetWidth, int targetHeight) {

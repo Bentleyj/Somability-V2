@@ -34,6 +34,7 @@
 #include "EventHub.h"
 //#include "Box2D.h"
 #include "ofxBox2d.h"
+#define MAX_SHAPE_AGE 10
 
 class BalanceState : public EventHub
 {
@@ -65,6 +66,7 @@ public:
 	bool mustFire;
 	ofImage gun;
 	ofImage circle;
+	float vol;
 
 	ofImage _img;
 	//ofxCvGrayscaleImage greyImg;
@@ -100,7 +102,6 @@ public:
 	bool shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape);
 	//
 	///////////////////////////////////////////////////////////////////////////////////////
-	float MAX_SHAPE_AGE;
 	float sensitivity;
 	float displayVolume;
 };

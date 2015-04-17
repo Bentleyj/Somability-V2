@@ -10,7 +10,7 @@ void ofApp::setup()
 
 	//set up variables in shared data
 	stateMachine.getSharedData().box2d->init();
-	stateMachine.getSharedData().box2d->setGravity(0, 10);
+	stateMachine.getSharedData().box2d->setGravity(0, 5);
 	stateMachine.getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());
 	stateMachine.getSharedData().box2d->setFPS(30.0);
 

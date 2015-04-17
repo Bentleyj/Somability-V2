@@ -38,7 +38,9 @@ public:
 	bool setColorImage(ofImage& img, MultiSourceFrame^ multiFrame);
 	Vector<Body^>^ getBodies(MultiSourceFrame^ multiFrame);
 	CoordinateMapper^ getCoordinateMapper() { return _kinect->CoordinateMapper; };
-	MultiSourceFrame^ SharedData::getMultiSourceFrame();
+	MultiSourceFrame^ getMultiSourceFrame();
+	Array<byte>^ getAudioFrame();
+	bool isVolOverThreshold(float threshold);
 	void setImageTransform(int width, int height, int targetWidth, int targetHeight);
 	bool isKinectOpen();
 	void closeKinect();
@@ -49,6 +51,8 @@ public:
 
 	KinectSensor^ _kinect;
 	MultiSourceFrameReader^ _multiFrameReader;
+	AudioBeamFrameReader^ _audioReader;
+	Array<byte>^ _audioBuffer;
 	ofTexture _tex;
 	ofImage _img;
 	Vector<Body^>^ _bodies;

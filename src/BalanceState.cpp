@@ -58,6 +58,8 @@ void BalanceState::setup() {
 	gun.setAnchorPercent(0.5, 0.5);
 	sensitivity = 50;
 
+	vol = 0;
+
 	//persons.resize(144);
 
 	_camSpacePoints = ref new Array<CameraSpacePoint>(2);
@@ -138,6 +140,20 @@ void BalanceState::update()
 	auto multiFrame = getSharedData().getMultiSourceFrame();
 	auto bodies = getSharedData().getBodies(multiFrame);
 	getSharedData().setColorImage(_img, multiFrame);
+	auto audioFrame = getSharedData().getAudioFrame();
+	if (audioFrame != nullptr) {
+		float rms = 0;
+		for (int i = 0; i < audioFrame->Length; i++) {
+			rms += (int)audioFrame[i] * (int)audioFrame[i];
+		}
+		rms /= audioFrame->Length;
+		rms = sqrt(rms);
+		vol = rms;
+		if (rms > 147) {
+
+		}
+	}
+
 
 	
 	if (bodies != nullptr) {
@@ -162,10 +178,10 @@ void BalanceState::update()
 
 					cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
 					auto edge = (*edges)[boneIdx];
-					(*edge)[0].x = (_colSpacePoints[0].X < 0.1) ? 0 : _colSpacePoints[0].X;
-					(*edge)[0].y = (_colSpacePoints[0].Y < 0.1) ? 0 : _colSpacePoints[0].Y;
-					(*edge)[1].x = (_colSpacePoints[1].X < 0.1) ? 0 : _colSpacePoints[1].X;
-					(*edge)[1].y = (_colSpacePoints[1].Y < 0.1) ? 0 : _colSpacePoints[1].Y;
+					(*edge)[0].x = (_colSpacePoints[0].X < 0.1) ? (*edge)[0].x : _colSpacePoints[0].X;
+					(*edge)[0].y = (_colSpacePoints[0].Y < 0.1) ? (*edge)[0].y : _colSpacePoints[0].Y;
+					(*edge)[1].x = (_colSpacePoints[1].X < 0.1) ? (*edge)[1].x : _colSpacePoints[1].X;
+					(*edge)[1].y = (_colSpacePoints[1].Y < 0.1) ? (*edge)[1].y : _colSpacePoints[1].Y;
 				}
 				persons[body->TrackingId] = edges;
 			} else {
@@ -284,15 +300,15 @@ void BalanceState::update()
 	//getSharedData().box2d->update();
 
 	// remove shapes offscreen
-	//ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
-	////float currTime = ofGetElapsedTimef();
-	//for(int i =0 ; i < shapes.size(); i++) {
-	//	if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) /*|| shapeIsTooOld(currTime, shapes[i].get())*/) {
-	//		data.erase(shapes[i].get());
-	//		shapes.erase(shapes.begin() + i);
-	//		i--;
-	//	}
-	//}
+	ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
+	float currTime = ofGetElapsedTimef();
+	for(int i =0 ; i < shapes.size(); i++) {
+		if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) || shapeIsTooOld(currTime, shapes[i].get())) {
+			data.erase(shapes[i].get());
+			shapes.erase(shapes.begin() + i);
+			i--;
+		}
+	}
 }
 //void BalanceState::setupGui(SomabilityGui *gui) {
 //	gui->addSlider("sensitivity", sensitivity, 0, 1);
@@ -304,6 +320,7 @@ void BalanceState::draw()
 	ofDrawBitmapString("balance", 30, 30);
 
 	ofPushMatrix();
+	ofPushStyle();
 	ofNoFill();
 	ofSetColor(255);
 	ofTranslate(getSharedData().imgTransform.first);
@@ -312,7 +329,10 @@ void BalanceState::draw()
 	_img.draw(0, 0);
 	//ofSetColor(0);
 	//ofDrawBitmapString(ofToString(persons.size()), 30, 30);
+	ofSetColor(0);
 	ofDrawBitmapString(ofToString(getSharedData().box2d->getWorld()->GetBodyCount()), 30, 30);
+	ofDrawBitmapString(ofToString(vol), 30, 50);
+	ofPopStyle();
 
 	//getSharedData().drawCorrectDisplayMode();
 	//glPushMatrix();
@@ -351,7 +371,6 @@ void BalanceState::draw()
 
 	ofPopMatrix();
 
-
 	// draw the cannon
 	ofPushMatrix();
 	ofTranslate(WIDTH,HEIGHT/2, 0);
@@ -363,7 +382,6 @@ void BalanceState::draw()
 
 	//ofSetColor(255);
 	////ofDrawBitmapString("Use the up and down arrow keys to change audio sensitivity ("+ofToString(sensitivity)+" / 100)", 5, 60);
-
 }
 
 string BalanceState::getName()
