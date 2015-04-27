@@ -33,6 +33,7 @@
 
 #define WIDTH ofGetWidth()
 #define HEIGHT ofGetHeight()
+#define ENERGY_THRESHOLD 10.0f
 
 
 void BalanceState::buildWalls() {
@@ -44,10 +45,7 @@ void BalanceState::buildWalls() {
 		walls[i].flagHasChanged();
 		walls[i].updateShape();
 	}
-
-
 	//wall.simplify(5);
-
 }
 
 void BalanceState::setup() {
@@ -57,9 +55,10 @@ void BalanceState::setup() {
 	circle.setAnchorPercent(0.5, 0.5);
 	gun.setAnchorPercent(0.5, 0.5);
 	sensitivity = 50;
-
-	vol = 0;
-
+	avgEnergy = 0.0f;
+	avgCount = 0;
+	lastFireTime = 0;
+	lastEnergies.resize(120, 70);
 	//persons.resize(144);
 
 	_camSpacePoints = ref new Array<CameraSpacePoint>(2);
@@ -109,6 +108,15 @@ bool BalanceState::shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape) {
 	return false;
 }
 
+float averageOfFloats(deque<float> vals){
+	float avg = 0.0f;
+	for (auto val : vals) {
+		avg += val * val;
+	}
+	avg /= vals.size();
+	return sqrt(avg);
+}
+
 
 void BalanceState::update()
 {
@@ -123,39 +131,34 @@ void BalanceState::update()
 		mustFire = false;
 	}
 
-	//wall[0].x = 0;
-	//wall[0].y = 0;
-	//wall[1].x = ofGetMouseX();
-	//wall[1].y = ofGetMouseY();
-
-	//for (int j = 0; j < 6; j++) {
-	//	for (int i = 0; i < 24; i++) {
-	//		walls[i][0].x = 0;
-	//		walls[i][0].y = 0;
-	//		walls[i][1].x = ofRandom(ofGetWidth());
-	//		walls[i][1].y = ofRandom(ofGetHeight());
-	//	}
-	//}
-
 	auto multiFrame = getSharedData().getMultiSourceFrame();
 	auto bodies = getSharedData().getBodies(multiFrame);
 	getSharedData().setColorImage(_img, multiFrame);
 	auto audioFrame = getSharedData().getAudioFrame();
+
 	if (audioFrame != nullptr) {
-		float rms = 0;
-		for (int i = 0; i < audioFrame->Length; i++) {
-			rms += (int)audioFrame[i] * (int)audioFrame[i];
-		}
-		rms /= audioFrame->Length;
-		rms = sqrt(rms);
-		vol = rms;
-		if (rms > 147) {
+		int stride = sizeof(float);
+		int sampleCounter = 0;
+		float sq = 0.0f;
+		double sum = 0;
+		for (int i = 0; i < audioFrame->Length; i += stride) {
+			memcpy(&sq, &audioFrame[i], sizeof(float));
+			sum += sq * sq;
+			sampleCounter++;
+			if (sampleCounter < 40)
+				continue;
+			float energy = (float)(10.0 * log10(sum / sampleCounter));
+			sampleCounter = sum = 0;
+			avgEnergy = energy;
+			//lastEnergies.pop_front();
+			//lastEnergies.push_back(energy);
+			if (abs(energy) > ENERGY_THRESHOLD) {
+				tryToFire();
+				break;
+			}
 
 		}
 	}
-
-
-	
 	if (bodies != nullptr) {
 		for (auto body : bodies) {
 			if (!body->IsTracked)
@@ -331,7 +334,7 @@ void BalanceState::draw()
 	//ofDrawBitmapString(ofToString(persons.size()), 30, 30);
 	ofSetColor(0);
 	ofDrawBitmapString(ofToString(getSharedData().box2d->getWorld()->GetBodyCount()), 30, 30);
-	ofDrawBitmapString(ofToString(vol), 30, 50);
+	ofDrawBitmapString(ofToString(avgEnergy), 30, 50);
 	ofPopStyle();
 
 	//getSharedData().drawCorrectDisplayMode();
@@ -398,7 +401,10 @@ void BalanceState::keyPressed(int k)
 }
 //
 void BalanceState::tryToFire() {
-	mustFire = true;
+	if (shapes.size() < 100 && ofGetElapsedTimeMillis() - lastFireTime > MIN_TIME_BETWEEN_FIRES) {
+		mustFire = true;
+		lastFireTime = ofGetElapsedTimeMillis();
+	}
 }
 //
 //

@@ -35,6 +35,7 @@
 //#include "Box2D.h"
 #include "ofxBox2d.h"
 #define MAX_SHAPE_AGE 10
+#define MIN_TIME_BETWEEN_FIRES  0.3 * 44100
 
 class BalanceState : public EventHub
 {
@@ -63,10 +64,13 @@ public:
 	float volume;
 	int audioFramesSinceLastFired;
 	int MIN_FRAMES_BETWEEN_FIRES;
+	deque<float> lastEnergies;
 	bool mustFire;
+	int lastFireTime;
 	ofImage gun;
 	ofImage circle;
-	float vol;
+	float avgEnergy;
+	int avgCount;
 
 	ofImage _img;
 	//ofxCvGrayscaleImage greyImg;
