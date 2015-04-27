@@ -33,7 +33,7 @@
 
 #define WIDTH ofGetWidth()
 #define HEIGHT ofGetHeight()
-#define ENERGY_THRESHOLD 10.0f
+#define ENERGY_THRESHOLD 30.0f
 
 
 void BalanceState::buildWalls() {
@@ -50,8 +50,8 @@ void BalanceState::buildWalls() {
 
 void BalanceState::setup() {
 	setupEvents();
-	gun.loadImage("gun.png");
-	circle.loadImage("circle.png");
+	gun.loadImage("imgs/gun.png");
+	circle.loadImage("imgs/circle.png");
 	circle.setAnchorPercent(0.5, 0.5);
 	gun.setAnchorPercent(0.5, 0.5);
 	sensitivity = 50;
@@ -87,11 +87,11 @@ void BalanceState::setup() {
 }
 
 void BalanceState::shoot() {
-	ofxBox2dCircle *c = new ofxBox2dCircle();
-	
+	//ofxBox2dCircle *c = new ofxBox2dCircle();
+	ofxBox2dRect *c = new ofxBox2dRect();
 	float r = ofRandom(23, 28);
 	c->setPhysics(3.0, 0.53, 0.1);
-	c->setup(getSharedData().box2d->getWorld(), WIDTH, HEIGHT/2, r);
+	c->setup(getSharedData().box2d->getWorld(), WIDTH, HEIGHT/2, r, r);
 	ofVec2f v(-20,0);
 	v.rotateRad(shootingAngle);
 	c->setVelocity(v);
@@ -152,7 +152,7 @@ void BalanceState::update()
 			avgEnergy = energy;
 			//lastEnergies.pop_front();
 			//lastEnergies.push_back(energy);
-			if (abs(energy) > ENERGY_THRESHOLD) {
+			if (abs(energy) < ENERGY_THRESHOLD) {
 				tryToFire();
 				break;
 			}

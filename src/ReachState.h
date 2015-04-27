@@ -41,11 +41,12 @@ public:
 	void draw();
 	string getName();
 
-	/*
+	ofImage _img;
+	
     void keyPressed(int key);
-	void setupGui(SomabilityGui *gui);
+	//void setupGui(SomabilityGui *gui);
 
-	void mouseReleased(int x, int y, int button);
+	//void mouseReleased(int x, int y, int button);
     vector    <ofPtr<ofxBox2dBaseShape> >	shapes;		  //	default box2d circles
 	void drawShape(int shapeId, ofRectangle &rect);
 	float shapeSize;
@@ -58,8 +59,11 @@ public:
 		NUM_SHAPES,
 		NO_SHAPE
 	};
-	
+	//
 	map<ShapeID, ofImage> shapeImages;
+
+	Array<CameraSpacePoint>^ _camSpacePoints;
+	Array<ColorSpacePoint>^ _colSpacePoints;
 
 	class ShapeData {
 	public:
@@ -70,28 +74,30 @@ public:
 			this->type = type;
 		}
 	};
-	
-	
+	//
+	//
 	void addShape(ShapeID name, ofVec2f pos);
-	
-		
+
+	void stateEnter();
+	//
+	//	
 	map<ofxBox2dBaseShape*,ShapeData> data;
 	bool shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape);
 	void setColorForShape(ShapeID t);
-	
-	
+	//
+	//
 	vector<pair<ShapeID,ofRectangle> > triggers;
 
 	enum Hand {
 		LEFT_HAND,
 		RIGHT_HAND
 	};
-	
+	//
 	ShapeID handTouching[2];
 
+	//
+	//void handMoved(ofVec2f p, Hand hand);
+	//void mouseMoved(int x, int y);
+	//void drawFluffBall(ofVec2f p, float radius);
 	
-	void handMoved(ofVec2f p, Hand hand);
-	void mouseMoved(int x, int y);
-	void drawFluffBall(ofVec2f p, float radius);
-	*/
 };
