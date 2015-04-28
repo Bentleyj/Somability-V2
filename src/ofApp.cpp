@@ -14,6 +14,12 @@ void ofApp::setup()
 	stateMachine.getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());
 	stateMachine.getSharedData().box2d->setFPS(30.0);
 
+	//Load Images
+	stateMachine.getSharedData().shapeImages[SharedData::CIRCLE].loadImage("imgs/circle.png");
+	stateMachine.getSharedData().shapeImages[SharedData::SQUARE].loadImage("imgs/square.png");
+	stateMachine.getSharedData().shapeImages[SharedData::HEXAGON].loadImage("imgs/hexagon.png");
+	stateMachine.getSharedData().shapeImages[SharedData::TRIANGLE].loadImage("imgs/triangle.png");
+
 	//add all the states
 	stateMachine.addState<FlowState>();
 	stateMachine.addState<BalanceState>();

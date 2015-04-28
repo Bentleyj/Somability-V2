@@ -35,22 +35,28 @@
 
 void ReachState::setup() {
 	setupEvents();
-	handTouching[LEFT_HAND] = NO_SHAPE;
-	handTouching[RIGHT_HAND] = NO_SHAPE;
+	handTouching[LEFT_HAND] = SharedData::NO_SHAPE;
+	handTouching[RIGHT_HAND] = SharedData::NO_SHAPE;
 	shapeSize = 1;
 	
 	_camSpacePoints = ref new Array<CameraSpacePoint>(2);
 	_colSpacePoints = ref new Array<ColorSpacePoint>(2);
-
-	shapeImages[CIRCLE].loadImage("imgs/circle.png");
-	shapeImages[SQUARE].loadImage("imgs/square.png");
-	shapeImages[HEXAGON].loadImage("imgs/hexagon.png");
-	shapeImages[TRIANGLE].loadImage("imgs/triangle.png");
 	
-	map<ShapeID, ofImage>::iterator it;
+	map<SharedData::ShapeID, ofImage>::iterator it;
 	
 	for(it = shapeImages.begin(); it != shapeImages.end(); it++) {
 		(*it).second.setAnchorPercent(0.5, 0.5);
+	}
+	// y position of the triggers, 2/9ths down the screen
+	float yy = ofGetHeight()*1.0f / 6.0f;
+	//triggers.resize(SharedData::NUM_SHAPES);
+	for (int i = 0; i < SharedData::NUM_SHAPES; i++) {
+		float xpos = ofMap(i, -0.25, SharedData::NUM_SHAPES - 0.25, 0, ofGetWidth());
+		//		ofLine(xpos, 0, xpos, 480);
+		ofRectangle r;
+		float w = shapeSize*ofGetWidth() / 7.0f;
+		r.set(xpos, yy, w, w);
+		triggers.push_back(make_pair((SharedData::ShapeID)i, r));
 	}
 }
 
@@ -86,10 +92,12 @@ void ReachState::update()
 	auto multiFrame = getSharedData().getMultiSourceFrame();
 	auto bodies = getSharedData().getBodies(multiFrame);
 	getSharedData().setColorImage(_img, multiFrame);
+	int i = 0;
 	if (bodies != nullptr) {
 		for (auto body : bodies) {
 			if (!body->IsTracked)
 				continue;
+			i++;
 			auto handLeft = body->Joints->Lookup(JointType::HandLeft);
 			auto handRight = body->Joints->Lookup(JointType::HandRight);
 
@@ -100,7 +108,7 @@ void ReachState::update()
 			cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
 			for (auto point : _colSpacePoints) {
 				for (int i = 0; i < triggers.size(); i++) {
-					if (triggers[i].second.inside(point.X, point.Y) && ofGetFrameNum()%10 == 0) {
+					if (triggers[i].second.inside(point.X , point.Y) && ofGetFrameNum() % 10 == 0) {
 						addShape(triggers[i].first, ofVec2f(ofRandom(0, ofGetWidth()), 1));
 					}
 				}
@@ -110,43 +118,6 @@ void ReachState::update()
 
 	getSharedData().box2d->update();
 
-	// y position of the triggers, 2/9ths down the screen
-	float yy = ofGetHeight()*2.f/9.f;
-	triggers.clear();
-	for(int i = 0; i < NUM_SHAPES; i++) {
-		float xpos = ofMap(i, -0.5, NUM_SHAPES-0.5, 0, ofGetWidth());
-//		ofLine(xpos, 0, xpos, 480);
-		ofRectangle r;
-		float w = shapeSize*ofGetWidth() / 7.f;
-		r.setFromCenter(xpos, yy, w, w);
-		triggers.push_back(make_pair((ShapeID)i, r));
-	}
-//	int numUsers = getSharedData().openNIDevice.getNumTrackedUsers();
-//	// FIX THIS
-//	
-//	ofVec2f skelScale(WIDTH/getSharedData().openNIDevice.getWidth(), HEIGHT/getSharedData().openNIDevice.getHeight());
-//	for(int i = 0; i < numUsers; i++) {
-//	
-//		ofxOpenNIUser &user = getSharedData().openNIDevice.getTrackedUser(i);
-//		ofxOpenNIJoint &j1 = user.getJoint(JOINT_LEFT_HAND);
-//		ofxOpenNIJoint &j2 = user.getJoint(JOINT_RIGHT_HAND);
-//		
-//		ofVec2f ap = j1.getProjectivePosition()*skelScale;
-//		ofVec2f bp = j2.getProjectivePosition()*skelScale;
-//
-//		if(ap.x!=0) handMoved(ap, LEFT_HAND);
-//		if(bp.x!=0) handMoved(bp, RIGHT_HAND);
-//		
-//	}
-//    getSharedData().box2d->update();
-//	if(ofGetFrameNum()%10==0) {
-//		if(handTouching[LEFT_HAND]!=NO_SHAPE) {
-//			addShape(handTouching[LEFT_HAND], ofVec2f(ofRandom(0, WIDTH), 1));
-//		}
-//		if(handTouching[RIGHT_HAND]!=NO_SHAPE) {
-//			addShape(handTouching[RIGHT_HAND], ofVec2f(ofRandom(0, WIDTH), 1));
-//		}
-//	}
 //    // remove shapes offscreen
     ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
 	float currTime = ofGetElapsedTimef();
@@ -159,14 +130,17 @@ void ReachState::update()
 	}
 }
 
-void ReachState::setColorForShape(ShapeID t) {
-	if(t==CIRCLE) {
+void ReachState::setColorForShape(SharedData::ShapeID t) {
+	if (t == SharedData::CIRCLE) {
 		ofSetHexColor(0xeb9f24);
-	} else if(t==HEXAGON) {
+	}
+	else if (t == SharedData::HEXAGON) {
 		ofSetHexColor(0x35c3f2);
-	} else if(t==TRIANGLE) {
+	}
+	else if (t == SharedData::TRIANGLE) {
 		ofSetHexColor(0xc6d92c);
-	} else if(t==SQUARE) {
+	}
+	else if (t == SharedData::SQUARE) {
 		ofSetHexColor(0xf085b6);
 	}
 }
@@ -211,14 +185,14 @@ void ReachState::draw()
 	ofFill();
 
     for(int i=0; i<shapes.size(); i++) {
-		ShapeID t = data[shapes[i].get()].type;
+		SharedData::ShapeID t = data[shapes[i].get()].type;
 		ofVec2f pos = shapes[i].get()->getPosition();
 		ofPushMatrix();
-		ofPushStyle();
-		ofSetRectMode(OF_RECTMODE_CENTER);
 		ofTranslate(pos.x, pos.y, 0);
 		ofRotate(shapes[i].get()->getRotation());
-		drawShape(t, ofRectangle(0, 0, 50, 50));
+		ofPushStyle();
+		ofSetRectMode(OF_RECTMODE_CENTER);
+		getSharedData().drawShape(t, ofRectangle(0, 0, 50, 50));
 		ofPopStyle();
 		ofPopMatrix();
 	}
@@ -229,67 +203,20 @@ void ReachState::draw()
 	for(int i = 0; i < triggers.size(); i++) {
 		ofFill();
 		ofSetColor(255);
-		//ofRect(triggers[i].second);
-		ShapeID shapeType = triggers[i].first;
+		SharedData::ShapeID shapeType = triggers[i].first;
 		if(handTouching[LEFT_HAND]==shapeType || handTouching[RIGHT_HAND]==shapeType) {
 			ofRectangle r = triggers[i].second;
 			ofPoint c = r.getCenter();
 			float scale = ofMap(sin(ofGetElapsedTimef()*3 + i), -1, 1, 1.1, 1.4);
 			r.setFromCenter(c, r.width * scale, r.height * scale);
-			drawShape(triggers[i].first, r);
+			getSharedData().drawShape(triggers[i].first, r);
 			//drawFluffBall(triggers[i].second.getCenter(), triggers[i].second.getWidth()*0.9);
 		}
 		
 		ofFill();
 		//setColorForShape(triggers[i].first);
-		drawShape(triggers[i].first, triggers[i].second);
+		getSharedData().drawShape(triggers[i].first, triggers[i].second);
 	}
-}
-void ReachState::drawShape(int shapeId, ofRectangle &rect) {
-	
-	shapeImages[(ShapeID)shapeId].draw(rect.getCenter().x, rect.getCenter().y, rect.width, rect.height);
-	
-	//switch(shapeId) {
-	//	case CIRCLE:{
-	//		ofCircle(rect.getCenter(), rect.width / 2);
-	//		break;
-	//	}
-	//	case SQUARE:{
-	//		ofRectangle r = rect;
-	//		ofPoint p = r.getCenter();
-	//		r.setFromCenter(p, r.width, r.height);
-	//		ofRect(r);
-	//		break;
-	//	}
-	//	case TRIANGLE:
-	//	{
-	//		ofBeginShape();
-	//		_ofVertex(rect.getBottomLeft());
-	//		_ofVertex(rect.getBottomRight());
-	//			
-	//		ofVec2f v = (rect.getBottomRight() + rect.getBottomLeft())/2;
-	//		v.y -= rect.height*sqrt(3)/2;
-	//		_ofVertex(v);
-	//			
-	//		ofEndShape();
-	//		break;
-	//	}
-	//	case HEXAGON:
-	//	{
-	//		ofPushMatrix();
-	//		ofTranslate(rect.getCenter().x, rect.getCenter().y, 0);
-	//		ofBeginShape();
-	//		ofVec2f v(rect.width/2, 0);
-	//		for(int i = 0; i < 6; i++) {
-	//			_ofVertex(v);
-	//			v.rotate(60);
-	//		}
-	//		ofEndShape();
-	//			
-	//		ofPopMatrix();
-	//	}
-	//		break;
-	//}
 }
 
 string ReachState::getName()
@@ -307,16 +234,14 @@ void ReachState::keyPressed(int k) {
 	//m = m*x/s;
 	
 	if(k=='j') {
-		addShape(CIRCLE, m);
+		addShape(SharedData::CIRCLE, m);
 	} else if(k=='k') {
-		addShape(HEXAGON, m);
+		addShape(SharedData::HEXAGON, m);
 	} else if(k=='l') {
-		addShape(TRIANGLE, m);
+		addShape(SharedData::TRIANGLE, m);
 	} else if(k==';') {
-		addShape(SQUARE, m);
+		addShape(SharedData::SQUARE, m);
 	}
-	
-	
 }
 //
 //void ReachState::mouseMoved(int x, int y) {
@@ -351,19 +276,20 @@ void ReachState::keyPressed(int k) {
 //	changeState("choice");
 //}
 //
-void ReachState::addShape(ShapeID type, ofVec2f pos) {
+void ReachState::addShape(SharedData::ShapeID type, ofVec2f pos) {
 	ofxBox2dBaseShape *shape = NULL;
 	float density = 10;
 	float minSize = 25;
 	float maxSize = 25;
 
-	if(type==CIRCLE) {
+	if (type == SharedData::CIRCLE) {
 		ofxBox2dCircle *c = new ofxBox2dCircle();
 		float r = ofRandom(minSize, maxSize);
 		c->setPhysics(density, 0.53, 0.1);
 		c->setup(getSharedData().box2d->getWorld(), pos.x, pos.y, r);
 		shape = c;
-	} else if(type==SQUARE) {
+	}
+	else if (type == SharedData::SQUARE) {
 		float w = ofRandom(minSize, maxSize);
 		float h = w;
 		ofxBox2dRect *r = new ofxBox2dRect();
@@ -373,7 +299,8 @@ void ReachState::addShape(ShapeID type, ofVec2f pos) {
 		float width = r->getWidth();
 		float height = r->getHeight();
 		shape = r;
-	} else if(type==TRIANGLE) {
+	}
+	else if (type == SharedData::TRIANGLE) {
 		float w = ofRandom(minSize, maxSize);
 		float h = w*1.73;
 		ofxBox2dPolygon *p = new ofxBox2dPolygon();
@@ -383,7 +310,8 @@ void ReachState::addShape(ShapeID type, ofVec2f pos) {
 		p->create(getSharedData().box2d->getWorld());
 		p->setPosition(pos.x, pos.y);
 		shape = p;
-	} else if(type==HEXAGON) {
+	}
+	else if (type == SharedData::HEXAGON) {
 		ofVec2f a, b;
 		float h = ofRandom(minSize, maxSize);
 		a = b = ofVec2f(h, 0);

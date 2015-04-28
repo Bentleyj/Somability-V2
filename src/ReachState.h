@@ -42,6 +42,8 @@ public:
 	string getName();
 
 	ofImage _img;
+
+	int numPeople;
 	
     void keyPressed(int key);
 	//void setupGui(SomabilityGui *gui);
@@ -50,17 +52,8 @@ public:
     vector    <ofPtr<ofxBox2dBaseShape> >	shapes;		  //	default box2d circles
 	void drawShape(int shapeId, ofRectangle &rect);
 	float shapeSize;
-	enum ShapeID {
-		
-		SQUARE,
-		TRIANGLE,
-		HEXAGON,
-		CIRCLE,
-		NUM_SHAPES,
-		NO_SHAPE
-	};
 	//
-	map<ShapeID, ofImage> shapeImages;
+	map<SharedData::ShapeID, ofImage> shapeImages;
 
 	Array<CameraSpacePoint>^ _camSpacePoints;
 	Array<ColorSpacePoint>^ _colSpacePoints;
@@ -68,32 +61,32 @@ public:
 	class ShapeData {
 	public:
 		float birthday;
-		ShapeID type;
-		ShapeData(ShapeID type = TRIANGLE, float birthday = 0) {
+		SharedData::ShapeID type;
+		ShapeData(SharedData::ShapeID type = SharedData::TRIANGLE, float birthday = 0) {
 			this->birthday = birthday;
 			this->type = type;
 		}
 	};
 	//
 	//
-	void addShape(ShapeID name, ofVec2f pos);
+	void addShape(SharedData::ShapeID name, ofVec2f pos);
 
 	void stateEnter();
 	//
 	//	
 	map<ofxBox2dBaseShape*,ShapeData> data;
 	bool shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape);
-	void setColorForShape(ShapeID t);
+	void setColorForShape(SharedData::ShapeID t);
 	//
 	//
-	vector<pair<ShapeID,ofRectangle> > triggers;
+	vector<pair<SharedData::ShapeID, ofRectangle> > triggers;
 
 	enum Hand {
 		LEFT_HAND,
 		RIGHT_HAND
 	};
 	//
-	ShapeID handTouching[2];
+	SharedData::ShapeID handTouching[2];
 
 	//
 	//void handMoved(ofVec2f p, Hand hand);

@@ -33,20 +33,7 @@
 
 #define WIDTH ofGetWidth()
 #define HEIGHT ofGetHeight()
-#define ENERGY_THRESHOLD 30.0f
-
-
-void BalanceState::buildWalls() {
-	for (int i = 0; i < 24; i++) {
-		walls[i].addVertex(0, 0);
-		walls[i].addVertex(ofRandom(ofGetWidth()/2), ofRandom(ofGetHeight()));
-		walls[i].setPhysics(0, 0, 0);
-		walls[i].create(getSharedData().box2d->getWorld());
-		walls[i].flagHasChanged();
-		walls[i].updateShape();
-	}
-	//wall.simplify(5);
-}
+#define ENERGY_THRESHOLD 40.0f
 
 void BalanceState::setup() {
 	setupEvents();
@@ -80,18 +67,16 @@ void BalanceState::setup() {
 	//mustFire = false;
 	//MAX_SHAPE_AGE = 20;
 
-
-
 	//greyImg.allocate(VISION_WIDTH, VISION_HEIGHT);
 	//buff = new unsigned char[VISION_WIDTH*VISION_HEIGHT];
 }
 
 void BalanceState::shoot() {
-	//ofxBox2dCircle *c = new ofxBox2dCircle();
-	ofxBox2dRect *c = new ofxBox2dRect();
-	float r = ofRandom(23, 28);
+	ofxBox2dCircle *c = new ofxBox2dCircle();
+	//ofxBox2dRect *c = new ofxBox2dRect();
+	float r = 28;//ofRandom(23, 28);
 	c->setPhysics(3.0, 0.53, 0.1);
-	c->setup(getSharedData().box2d->getWorld(), WIDTH, HEIGHT/2, r, r);
+	c->setup(getSharedData().box2d->getWorld(), WIDTH, HEIGHT/2, r);
 	ofVec2f v(-20,0);
 	v.rotateRad(shootingAngle);
 	c->setVelocity(v);
@@ -303,10 +288,10 @@ void BalanceState::update()
 	//getSharedData().box2d->update();
 
 	// remove shapes offscreen
-	ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
+	//ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
 	float currTime = ofGetElapsedTimef();
 	for(int i =0 ; i < shapes.size(); i++) {
-		if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) || shapeIsTooOld(currTime, shapes[i].get())) {
+		if(/*ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) ||*/ shapeIsTooOld(currTime, shapes[i].get())) {
 			data.erase(shapes[i].get());
 			shapes.erase(shapes.begin() + i);
 			i--;
@@ -356,21 +341,19 @@ void BalanceState::draw()
 	//
 
     for(int i=0; i<shapes.size(); i++) {
-		ofxBox2dCircle *c = (ofxBox2dCircle*) shapes[i].get();
-		circle.draw(c->getPosition().x, c->getPosition().y, c->getRadius()*2, c->getRadius()*2);
-		shapes[i].get()->draw();
+		getSharedData().drawShape(SharedData::CIRCLE, ofRectangle(shapes[i].get()->getPosition().x, shapes[i].get()->getPosition().y, 56, 56));
+		//ofxBox2dCircle *c = (ofxBox2dCircle*) shapes[i].get();
+		//circle.draw(c->getPosition().x, c->getPosition().y, c->getRadius()*2, c->getRadius()*2);
+		//shapes[i].get()->draw();
 	}
 
-	for (auto person : persons) {
-		ofSetColor(255);
-		ofSetLineWidth(20);
-		for (auto edge : *person.second) {
-			edge->draw();
-		}
-	}
-	for (int i = 0; i < 24; i++) {
-		walls[i].draw();
-	}
+	//for (auto person : persons) {
+	//	ofSetColor(255);
+	//	ofSetLineWidth(20);
+	//	for (auto edge : *person.second) {
+	//		edge->draw();
+	//	}
+	//}
 
 	ofPopMatrix();
 
@@ -401,10 +384,30 @@ void BalanceState::keyPressed(int k)
 }
 //
 void BalanceState::tryToFire() {
+	int time = ofGetElapsedTimeMillis();
+	int minTime = MIN_TIME_BETWEEN_FIRES;
+	int lastFire = lastFireTime;
+	int diff = time - lastFire;
 	if (shapes.size() < 100 && ofGetElapsedTimeMillis() - lastFireTime > MIN_TIME_BETWEEN_FIRES) {
 		mustFire = true;
 		lastFireTime = ofGetElapsedTimeMillis();
 	}
+}
+
+void BalanceState::stateEnter() {
+	data.clear();
+	shapes.clear();
+	vector<b2Body*> bodies;
+	b2Body* body = getSharedData().box2d->getWorld()->GetBodyList();
+	while (body != NULL) {
+		bodies.push_back(body);
+		body = body->GetNext();
+	}
+	for (auto bodyToDelete : bodies) {
+		getSharedData().box2d->getWorld()->DestroyBody(bodyToDelete);
+	}
+
+	getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());
 }
 //
 //

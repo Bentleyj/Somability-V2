@@ -45,6 +45,21 @@ public:
 	bool isKinectOpen();
 	void closeKinect();
 
+	void drawShape(int shapeId, ofRectangle &rect);
+
+	enum ShapeID {
+
+		SQUARE,
+		TRIANGLE,
+		HEXAGON,
+		CIRCLE,
+		NUM_SHAPES,
+		NO_SHAPE
+	};
+
+	map<ShapeID, ofImage> shapeImages;
+
+
 	const static JointType Limbs[24][2];
 
 	pair<ofPoint, float> imgTransform;

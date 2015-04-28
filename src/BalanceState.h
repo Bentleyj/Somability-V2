@@ -35,7 +35,7 @@
 //#include "Box2D.h"
 #include "ofxBox2d.h"
 #define MAX_SHAPE_AGE 10
-#define MIN_TIME_BETWEEN_FIRES  0.3 * 44100
+#define MIN_TIME_BETWEEN_FIRES  0//0.3 * 44100
 
 class BalanceState : public EventHub
 {
@@ -48,7 +48,7 @@ public:
 	//void mouseReleased(int x, int y, int button);
 	string getName();
 
-	//void stateEnter();
+	void stateEnter();
 	//void stateExit();
 	void shoot();
 	void tryToFire();

@@ -152,4 +152,8 @@ void SharedData::setImageTransform(int width, int height, int targetWidth, int t
 	}
 }
 
+void SharedData::drawShape(int shapeId, ofRectangle &rect) {
+	shapeImages[(ShapeID)shapeId].draw(rect.x, rect.y, rect.width, rect.height);
+}
+
 
