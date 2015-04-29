@@ -35,7 +35,7 @@
 //#include "Box2D.h"
 #include "ofxBox2d.h"
 #define MAX_SHAPE_AGE 10
-#define MIN_TIME_BETWEEN_FIRES  0//0.3 * 44100
+#define MIN_TIME_BETWEEN_FIRES  100//0.3 * 44100
 
 class BalanceState : public EventHub
 {
@@ -49,7 +49,7 @@ public:
 	string getName();
 
 	void stateEnter();
-	//void stateExit();
+	void stateExit();
 	void shoot();
 	void tryToFire();
 	void buildWalls();
@@ -72,7 +72,6 @@ public:
 	float avgEnergy;
 	int avgCount;
 
-	ofImage _img;
 	//ofxCvGrayscaleImage greyImg;
 	//ofxCvContourFinder contours;
 

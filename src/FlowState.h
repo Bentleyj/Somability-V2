@@ -63,8 +63,7 @@ public:
 	//void userEvent(ofxOpenNIUserEvent & event);
 private:
 
-	ofTexture _tex;
-	ofImage _img;
+	void keyPressed(int k);
 
 	Array<CameraSpacePoint>^ _camSpacePoints;
 	Array<ColorSpacePoint>^ _colSpacePoints;

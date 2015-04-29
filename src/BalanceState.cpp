@@ -118,7 +118,7 @@ void BalanceState::update()
 
 	auto multiFrame = getSharedData().getMultiSourceFrame();
 	auto bodies = getSharedData().getBodies(multiFrame);
-	getSharedData().setColorImage(_img, multiFrame);
+	getSharedData().setCorrectDisplayImage(multiFrame);
 	auto audioFrame = getSharedData().getAudioFrame();
 
 	if (audioFrame != nullptr) {
@@ -206,7 +206,6 @@ void BalanceState::update()
 		for (auto person : persons) {
 			if (std::find(trackedIds.begin(), trackedIds.end(), person.first) != trackedIds.end()) {
 				for (auto bone : *person.second) {
-					//bone->simplify(5);
 					bone->setPhysics(0, 0, 0);
 					bone->create(getSharedData().box2d->getWorld());
 					bone->flagHasChanged();
@@ -225,7 +224,7 @@ void BalanceState::update()
 		}
 	}
 	
-	getSharedData().box2d->update();
+	if (shapes.size() > 0 ||  data.size() > 0) getSharedData().box2d->update();
 
 	//greyImg.set(0);
 	//unsigned char *pix = greyImg.getPixels();
@@ -291,7 +290,7 @@ void BalanceState::update()
 	//ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
 	float currTime = ofGetElapsedTimef();
 	for(int i =0 ; i < shapes.size(); i++) {
-		if(/*ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) ||*/ shapeIsTooOld(currTime, shapes[i].get())) {
+		if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) || shapeIsTooOld(currTime, shapes[i].get())) {
 			data.erase(shapes[i].get());
 			shapes.erase(shapes.begin() + i);
 			i--;
@@ -305,7 +304,8 @@ void BalanceState::update()
 
 void BalanceState::draw()
 {
-	ofDrawBitmapString("balance", 30, 30);
+	ofBackground(255);
+	//ofDrawBitmapString("balance", 30, 30);
 
 	ofPushMatrix();
 	ofPushStyle();
@@ -314,12 +314,12 @@ void BalanceState::draw()
 	ofTranslate(getSharedData().imgTransform.first);
 	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
 	ofSetColor(255);
-	_img.draw(0, 0);
+	getSharedData().drawCorrectDisplayImage();
 	//ofSetColor(0);
 	//ofDrawBitmapString(ofToString(persons.size()), 30, 30);
 	ofSetColor(0);
-	ofDrawBitmapString(ofToString(getSharedData().box2d->getWorld()->GetBodyCount()), 30, 30);
-	ofDrawBitmapString(ofToString(avgEnergy), 30, 50);
+	//ofDrawBitmapString(ofToString(getSharedData().box2d->getWorld()->GetBodyCount()), 30, 30);
+	//ofDrawBitmapString(ofToString(avgEnergy), 30, 50);
 	ofPopStyle();
 
 	//getSharedData().drawCorrectDisplayMode();
@@ -341,11 +341,15 @@ void BalanceState::draw()
 	//
 
     for(int i=0; i<shapes.size(); i++) {
+		ofPushStyle();
+		ofSetRectMode(OF_RECTMODE_CENTER);
 		getSharedData().drawShape(SharedData::CIRCLE, ofRectangle(shapes[i].get()->getPosition().x, shapes[i].get()->getPosition().y, 56, 56));
+		ofPopStyle();
 		//ofxBox2dCircle *c = (ofxBox2dCircle*) shapes[i].get();
 		//circle.draw(c->getPosition().x, c->getPosition().y, c->getRadius()*2, c->getRadius()*2);
 		//shapes[i].get()->draw();
 	}
+	ofDrawBitmapString(ofToString(ofGetMouseX()) + ", " + ofToString(ofGetMouseY()), ofGetMouseX() + 10, ofGetMouseY() + 10);
 
 	//for (auto person : persons) {
 	//	ofSetColor(255);
@@ -364,6 +368,8 @@ void BalanceState::draw()
 	ofSetColor(255);
 	gun.draw(0,0);
 	ofPopMatrix();
+
+	getSharedData().drawDisplayMode();
 	//// contours.draw();
 
 	//ofSetColor(255);
@@ -379,6 +385,7 @@ void BalanceState::keyPressed(int k)
 {
 	//changeState("choice");
 	if (k == 'f') tryToFire();
+	getSharedData().changeDisplayMode(k);
 	//if (k == 'w') addWall();
 	//mustFire = true;
 }
@@ -395,8 +402,25 @@ void BalanceState::tryToFire() {
 }
 
 void BalanceState::stateEnter() {
-	data.clear();
-	shapes.clear();
+	/*if (data.size() > 0) 	data.clear();
+	if (shapes.size() > 0)	shapes.clear();
+	vector<b2Body*> bodies;
+	b2Body* body = getSharedData().box2d->getWorld()->GetBodyList();
+	while (body != NULL) {
+		bodies.push_back(body);
+		body = body->GetNext();
+	}
+	for (auto bodyToDelete : bodies) {
+		getSharedData().box2d->getWorld()->DestroyBody(bodyToDelete);
+	}
+
+	getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());*/
+}
+
+void BalanceState::stateExit() {
+	if (data.size() > 0) 	data.clear();
+	if (shapes.size() > 0)	shapes.clear();
+	if (persons.size() > 0) persons.clear();
 	vector<b2Body*> bodies;
 	b2Body* body = getSharedData().box2d->getWorld()->GetBodyList();
 	while (body != NULL) {

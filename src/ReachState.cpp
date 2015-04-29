@@ -32,6 +32,7 @@
 #include "ReachState.h"
 
 #define MAX_SHAPE_AGE 20
+#define MIN_TIME_BETWEEN_SPAWNS 200
 
 void ReachState::setup() {
 	setupEvents();
@@ -56,11 +57,27 @@ void ReachState::setup() {
 		ofRectangle r;
 		float w = shapeSize*ofGetWidth() / 7.0f;
 		r.set(xpos, yy, w, w);
-		triggers.push_back(make_pair((SharedData::ShapeID)i, r));
+		triggers.push_back(make_pair(make_pair((SharedData::ShapeID)i, r), 1.0f));
 	}
 }
 
 void ReachState::stateEnter() {
+	//data.clear();
+	//shapes.clear();
+	//vector<b2Body*> bodies;
+	//b2Body* body = getSharedData().box2d->getWorld()->GetBodyList();
+	//while (body != NULL) {
+	//	bodies.push_back(body);
+	//	body = body->GetNext();
+	//}
+	//for (auto bodyToDelete : bodies) {
+	//	getSharedData().box2d->getWorld()->DestroyBody(bodyToDelete);
+	//}
+
+	//getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());
+}
+
+void ReachState::stateExit() {
 	data.clear();
 	shapes.clear();
 	vector<b2Body*> bodies;
@@ -91,7 +108,7 @@ void ReachState::update()
 {
 	auto multiFrame = getSharedData().getMultiSourceFrame();
 	auto bodies = getSharedData().getBodies(multiFrame);
-	getSharedData().setColorImage(_img, multiFrame);
+	getSharedData().setCorrectDisplayImage(multiFrame);
 	int i = 0;
 	if (bodies != nullptr) {
 		for (auto body : bodies) {
@@ -108,8 +125,9 @@ void ReachState::update()
 			cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
 			for (auto point : _colSpacePoints) {
 				for (int i = 0; i < triggers.size(); i++) {
-					if (triggers[i].second.inside(point.X , point.Y) && ofGetFrameNum() % 10 == 0) {
-						addShape(triggers[i].first, ofVec2f(ofRandom(0, ofGetWidth()), 1));
+					if (triggers[i].first.second.inside(point.X, point.Y) && ofGetElapsedTimeMillis() - lastSpawnTime > MIN_TIME_BETWEEN_SPAWNS) {
+						addShape(triggers[i].first.first, ofVec2f(ofRandom(0, ofGetWidth()), 1));
+						lastSpawnTime = ofGetElapsedTimeMillis();
 					}
 				}
 			}
@@ -118,11 +136,11 @@ void ReachState::update()
 
 	getSharedData().box2d->update();
 
-//    // remove shapes offscreen
-    ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
+    // remove shapes offscreen
+//    ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
 	float currTime = ofGetElapsedTimef();
 	for(int i =0 ; i < shapes.size(); i++) {
-		if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) || shapeIsTooOld(currTime, shapes[i].get())) {
+		if(/*ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) ||*/ shapeIsTooOld(currTime, shapes[i].get())) {
 			data.erase(shapes[i].get());
 			shapes.erase(shapes.begin() + i);
 			i--;
@@ -150,15 +168,15 @@ void _ofVertex(ofVec2f v) {
 }
 
 //void ReachState::drawFluffBall(ofVec2f p, float radius) {
-//	glPushMatrix();
-//	glTranslatef(p.x, p.y, 0);
+//	ofPushMatrix();
+//	ofTranslate(p.x, p.y, 0);
 //	ofVec2f a(radius, 0);
 //	int steps = 60;
 //	float angle = 360.f/steps;
-//	
-//	
-//	glBegin(GL_TRIANGLE_FAN);
-//	glColor4f(1, 1, 1, 1);
+//
+//	//ofSetStyle(OF_PRIMITIVE_TRIANGLE_FAN);
+//	ofBeginShape();
+//	ofSetColor(1, 1, 1, 1);
 //	glVertex2f(0,0);
 //	for(int i = 0; i <= steps; i++) {
 //	glColor4f(1, 1, 1, 0);
@@ -171,6 +189,7 @@ void _ofVertex(ofVec2f v) {
 
 void ReachState::draw()
 {
+	ofBackground(255);
 	ofDrawBitmapString("reach", 30, 30);
  //   getSharedData().drawCorrectDisplayMode();
 	ofPushMatrix();
@@ -178,7 +197,7 @@ void ReachState::draw()
 	ofTranslate(getSharedData().imgTransform.first);
 	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
 	ofSetColor(255);
-	_img.draw(0, 0);
+	getSharedData().drawCorrectDisplayImage();
 	ofPopStyle();
 	ofPopMatrix();
 
@@ -203,20 +222,22 @@ void ReachState::draw()
 	for(int i = 0; i < triggers.size(); i++) {
 		ofFill();
 		ofSetColor(255);
-		SharedData::ShapeID shapeType = triggers[i].first;
+		SharedData::ShapeID shapeType = triggers[i].first.first;
 		if(handTouching[LEFT_HAND]==shapeType || handTouching[RIGHT_HAND]==shapeType) {
-			ofRectangle r = triggers[i].second;
+			ofRectangle r = triggers[i].first.second;
 			ofPoint c = r.getCenter();
 			float scale = ofMap(sin(ofGetElapsedTimef()*3 + i), -1, 1, 1.1, 1.4);
 			r.setFromCenter(c, r.width * scale, r.height * scale);
-			getSharedData().drawShape(triggers[i].first, r);
+			getSharedData().drawShape(triggers[i].first.first, r);
 			//drawFluffBall(triggers[i].second.getCenter(), triggers[i].second.getWidth()*0.9);
 		}
 		
 		ofFill();
 		//setColorForShape(triggers[i].first);
-		getSharedData().drawShape(triggers[i].first, triggers[i].second);
+		//ofRotateZ(triggers[i].second);
+		getSharedData().drawShape(triggers[i].first.first, triggers[i].first.second);
 	}
+	getSharedData().drawDisplayMode();
 }
 
 string ReachState::getName()
@@ -242,6 +263,9 @@ void ReachState::keyPressed(int k) {
 	} else if(k==';') {
 		addShape(SharedData::SQUARE, m);
 	}
+
+	getSharedData().changeDisplayMode(k);
+
 }
 //
 //void ReachState::mouseMoved(int x, int y) {

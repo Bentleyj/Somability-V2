@@ -25,15 +25,22 @@ void ofApp::setup()
 	stateMachine.addState<BalanceState>();
 	stateMachine.addState<ReachState>();
 
-	stateMachine.getSharedData().setupKinect(FrameSourceTypes::Color | FrameSourceTypes::Body);
+	stateMachine.getSharedData().setupKinect(FrameSourceTypes::Color | FrameSourceTypes::Body | FrameSourceTypes::BodyIndex);
+
+	stateMachine.getSharedData().skeletonBuffer.allocate(ofGetWidth(), ofGetHeight());
+	stateMachine.getSharedData()._camSpacePoints = ref new Array<CameraSpacePoint>(2);
+	stateMachine.getSharedData()._colSpacePoints = ref new Array<ColorSpacePoint>(2);
+
 
 	int width = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Width;
 	int height = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Height;
 
 	stateMachine.getSharedData().setImageTransform(width, height, ofGetWidth(), ofGetHeight());
 
+	stateMachine.getSharedData().displayMode = stateMachine.getSharedData().SKELETONS;
+
 	//set initial state
-	stateMachine.changeState("balance");
+	stateMachine.changeState("flow");
 
 	//stateMachine.getSharedData().setupKinect(Frame);
 }
@@ -46,6 +53,7 @@ void ofApp::exit()
 //--------------------------------------------------------------
 void ofApp::update()
 {
+
 }
 
 //--------------------------------------------------------------

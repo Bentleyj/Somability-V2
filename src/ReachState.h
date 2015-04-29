@@ -41,8 +41,6 @@ public:
 	void draw();
 	string getName();
 
-	ofImage _img;
-
 	int numPeople;
 	
     void keyPressed(int key);
@@ -72,14 +70,16 @@ public:
 	void addShape(SharedData::ShapeID name, ofVec2f pos);
 
 	void stateEnter();
+	void stateExit();
 	//
 	//	
+	int lastSpawnTime;
 	map<ofxBox2dBaseShape*,ShapeData> data;
 	bool shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape);
 	void setColorForShape(SharedData::ShapeID t);
 	//
 	//
-	vector<pair<SharedData::ShapeID, ofRectangle> > triggers;
+	vector<pair<pair<SharedData::ShapeID, ofRectangle>, float>> triggers;
 
 	enum Hand {
 		LEFT_HAND,

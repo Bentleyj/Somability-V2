@@ -54,7 +54,7 @@ void FlowState::update()
 {
 	auto multiFrame = getSharedData().getMultiSourceFrame();
 	auto bodies = getSharedData().getBodies(multiFrame);
-	getSharedData().setColorImage(_img, multiFrame);
+	getSharedData().setCorrectDisplayImage(multiFrame);
 
 
 	if (bodies == nullptr)
@@ -80,13 +80,16 @@ void FlowState::update()
 			_camSpacePoints[0] = joint1.Position;
 			_camSpacePoints[1] = joint2.Position;
 
+			ofVec3f limbLength;
+			ofVec3f joint1Pos;
+
 			cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
 
 			auto x = _colSpacePoints[1].X - _colSpacePoints[0].X;
 			auto y = _colSpacePoints[1].Y - _colSpacePoints[0].Y;
 
-			ofVec3f limbLength = ofVec3f(x, y);
-			ofVec3f joint1Pos = ofVec3f(_colSpacePoints[0].X, _colSpacePoints[0].Y);
+			limbLength = ofVec3f(x, y);
+			joint1Pos = ofVec3f(_colSpacePoints[0].X, _colSpacePoints[0].Y);
 
 			for (int k = 0; k < NUM_TRAILS_PER_LIMB; k++)
 			{
@@ -96,7 +99,6 @@ void FlowState::update()
 				trails[myId].update(joint1Pos + limbLength * p);
 			}
 		}
-
 		id++;
 	}
 	if (id > 0)
@@ -111,6 +113,7 @@ void FlowState::update()
 
 void FlowState::draw()
 {
+	ofBackground(255);
 	//getSharedData().drawCorrectDisplayMode();
 	ofClear(255);
 
@@ -124,14 +127,13 @@ void FlowState::draw()
 	ofTranslate(getSharedData().imgTransform.first);
 	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
 	ofSetColor(255);
-	_img.draw(0, 0);
-	//_img.draw()
+	getSharedData().drawCorrectDisplayImage();
 	ofPopMatrix();
 
 	ofSetColor(0);
 	
 	ofPushMatrix();
-	////ofScale
+	//ofScale
 	//ofSetLineWidth(75.0f);
 
 	map<int,Trail>::iterator it = trails.begin();
@@ -141,6 +143,11 @@ void FlowState::draw()
 	}
 
 	ofPopMatrix();
+	getSharedData().drawDisplayMode();
+}
+
+void FlowState::keyPressed(int k) {
+	getSharedData().changeDisplayMode(k);
 }
 
 #if 0
@@ -167,13 +174,4 @@ void FlowState::mouseMoved(int x, int y, int button) {
 	
 }
 
-void FlowState::stateEnter() {
-	SomabilityApp::stateEnter();
-	ofSetWindowTitle(getName());
-	
-	ofAddListener(getSharedData().openNIDevice.userEvent, this, &FlowState::userEvent);
-}
-void FlowState::stateExit() {
-	ofRemoveListener(getSharedData().openNIDevice.userEvent, this, &FlowState::userEvent);
-}
 #endif

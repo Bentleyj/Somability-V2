@@ -36,18 +36,23 @@ void SharedData::setupKinect(FrameSourceTypes  frameSourceTypes) {
 	{
 		_multiFrameReader = _kinect->OpenMultiSourceFrameReader(frameSourceTypes);
 
-		auto colorFrameDescription = _kinect->ColorFrameSource->CreateFrameDescription(ColorImageFormat::Rgba);
-
 		if ((frameSourceTypes & FrameSourceTypes::Color) == FrameSourceTypes::Color) {
-			// rgba is 4 bytes per pixel
-			_bytesPerPixel = colorFrameDescription->BytesPerPixel;
+			auto colorFrameDescription = _kinect->ColorFrameSource->CreateFrameDescription(ColorImageFormat::Rgba);
 
 			// allocate space to put the pixels to be rendered
-			_colorPixels = ref new Array<byte>(colorFrameDescription->Width * colorFrameDescription->Height * _bytesPerPixel);
+			_colorPixels = ref new Array<byte>(colorFrameDescription->Width * colorFrameDescription->Height * colorFrameDescription->BytesPerPixel);
 		}
 
 		if ((frameSourceTypes & FrameSourceTypes::Body) == FrameSourceTypes::Body) {
 			_bodies = ref new Vector<Body^>(_kinect->BodyFrameSource->BodyCount);
+		}
+
+		if ((frameSourceTypes & FrameSourceTypes::BodyIndex) == FrameSourceTypes::BodyIndex) {
+			auto bodyIndexFrameDescription = _kinect->BodyIndexFrameSource->FrameDescription;
+			int width = bodyIndexFrameDescription->Width;
+			int height = bodyIndexFrameDescription->Height;
+			int bytesPerPixel = bodyIndexFrameDescription->BytesPerPixel;
+			_bodyIndexPixels = ref new Array<byte>(bodyIndexFrameDescription->Width * bodyIndexFrameDescription->Height *  bodyIndexFrameDescription->BytesPerPixel);
 		}
 
 		AudioSource^ audioSource = _kinect->AudioSource;
@@ -66,38 +71,130 @@ void SharedData::closeKinect() {
 	_kinect->Close();
 }
 
-//Vector<AudioBeamFrame^>^ SharedData::getAudioBeamFrames() {
-//	auto audioFrames = _audioReader->AcquireLatestBeamFrames();
-//	return audioFrames;
-//}
-
 MultiSourceFrame^ SharedData::getMultiSourceFrame() {
 	auto multiFrame = _multiFrameReader->AcquireLatestFrame();
 	return multiFrame;
 }
 
-bool SharedData::setColorImage(ofImage& img, MultiSourceFrame^ multiFrame) {
+bool SharedData::setCorrectDisplayImage(MultiSourceFrame^ multiFrame) {
 	_frameProcessed = false;
 	if (multiFrame != nullptr)
 	{
-		if (multiFrame->ColorFrameReference != nullptr)
-		{
-			auto colorFrame = multiFrame->ColorFrameReference->AcquireFrame();
-
-			if (colorFrame != nullptr)
+		if (displayMode == displayModeID::MIRROR) {
+			if (multiFrame->ColorFrameReference != nullptr)
 			{
-				colorFrame->CopyConvertedFrameDataToArray(_colorPixels, ColorImageFormat::Rgba);
+				auto colorFrame = multiFrame->ColorFrameReference->AcquireFrame();
 
-				_frameProcessed = true;
-			}
-			if (_frameProcessed) {
-				int height = _kinect->ColorFrameSource->FrameDescription->Height;
-				int width = _kinect->ColorFrameSource->FrameDescription->Width;
-				img.setFromPixels(_colorPixels->Data, width, height, ofImageType::OF_IMAGE_COLOR_ALPHA);
+				if (colorFrame != nullptr)
+				{
+					colorFrame->CopyConvertedFrameDataToArray(_colorPixels, ColorImageFormat::Rgba);
+
+					_frameProcessed = true;
+				}
+				if (_frameProcessed) {
+					int height = _kinect->ColorFrameSource->FrameDescription->Height;
+					int width = _kinect->ColorFrameSource->FrameDescription->Width;
+					mirrorImage.setFromPixels(_colorPixels->Data, width, height, ofImageType::OF_IMAGE_COLOR_ALPHA);
+				}
+				else {
+					mirrorImage.setColor(ofColor(0));
+				}
 			}
 		}
+		else if (displayMode == displayModeID::INVISIBLE) {
+			_frameProcessed = true;
+			mirrorImage.clear();
+
+		}
+		else if (displayMode == displayModeID::SKELETONS) {
+			if (multiFrame->ColorFrameReference != nullptr && multiFrame->BodyFrameReference != nullptr)
+			{
+				auto colorFrame = multiFrame->ColorFrameReference->AcquireFrame();
+				auto bodies = getBodies(multiFrame);
+
+				vector<pair<ofVec2f, ofVec2f>> bones;
+
+				if (colorFrame != nullptr && bodies != nullptr)
+				{
+					bool noBodiesTracked = true;
+					for (auto body : bodies) {
+						if (!body->IsTracked)
+							continue;
+						for (int boneIdx = 0; boneIdx < 24; boneIdx++) {
+							auto j1 = Limbs[boneIdx][0];
+							auto j2 = Limbs[boneIdx][1];
+
+							auto joint1 = body->Joints->Lookup(j1);
+							auto joint2 = body->Joints->Lookup(j2);
+
+							auto cm = getCoordinateMapper();
+							_camSpacePoints[0] = joint1.Position;
+							_camSpacePoints[1] = joint2.Position;
+
+							cm->MapCameraPointsToColorSpace(_camSpacePoints, _colSpacePoints);
+
+							auto bone = make_pair(ofVec2f(_colSpacePoints[0].X, _colSpacePoints[0].Y), ofVec2f(_colSpacePoints[1].X, _colSpacePoints[1].Y));
+							bones.push_back(bone);
+						}
+					}
+
+					colorFrame->CopyConvertedFrameDataToArray(_colorPixels, ColorImageFormat::Rgba);
+
+					_frameProcessed = true;
+				}
+				if (_frameProcessed) {
+					int height = _kinect->ColorFrameSource->FrameDescription->Height;
+					int width = _kinect->ColorFrameSource->FrameDescription->Width;
+					mirrorImage.setFromPixels(_colorPixels->Data, width, height, ofImageType::OF_IMAGE_COLOR_ALPHA);
+					skeletonBuffer.begin();
+						ofPushStyle();
+						ofSetColor(255);
+						mirrorImage.draw(0, 0);
+						ofSetColor(255, 0, 0);
+						if (bones.size() > 0) {
+							for (auto bone : bones) {
+								ofLine(bone.first, bone.second);
+							}
+						}
+						ofPopStyle();
+						//ofRect(ofGetWidth()/2, ofGetHeight()/2, 100, 100);
+						skeletonBuffer.end();
+					skeletonBuffer.readToPixels(mirrorImage);
+					mirrorImage.update();
+				}
+			}
+		}
+		//else if (displayMode == displayModeID::SILHOUETTE) {
+		//	if (multiFrame->BodyIndexFrameReference != nullptr)
+		//	{
+		//		auto bodyIndexFrame = multiFrame->BodyIndexFrameReference->AcquireFrame();
+
+		//		if (bodyIndexFrame != nullptr)
+		//		{
+		//			bodyIndexFrame->CopyFrameDataToArray(_bodyIndexPixels);
+
+		//			_frameProcessed = true;
+		//		}
+		//		if (_frameProcessed) {
+		//			int height = _kinect->BodyIndexFrameSource->FrameDescription->Height;
+		//			int width = _kinect->BodyIndexFrameSource->FrameDescription->Width;
+		//			silhouetteImage.setFromPixels(_bodyIndexPixels->Data, width, height, ofImageType::OF_IMAGE_COLOR_ALPHA);
+		//			return _frameProcessed;
+
+		//		}
+		//		else {
+		//			silhouetteImage.setColor(ofColor(0));
+		//			return _frameProcessed;
+		//		}
+		//	}
+		//	return true;
+		//}
 	}
 	return _frameProcessed;
+}
+
+void SharedData::drawCorrectDisplayImage() {
+	mirrorImage.draw(0, 0);
 }
 
 Vector<Body^>^ SharedData::getBodies(MultiSourceFrame^ multiFrame) {
@@ -154,6 +251,38 @@ void SharedData::setImageTransform(int width, int height, int targetWidth, int t
 
 void SharedData::drawShape(int shapeId, ofRectangle &rect) {
 	shapeImages[(ShapeID)shapeId].draw(rect.x, rect.y, rect.width, rect.height);
+}
+
+void SharedData::drawDisplayMode() {
+	switch (displayMode)
+	{
+	case displayModeID::MIRROR :
+		ofDrawBitmapStringHighlight("Display Mode: Mirror " + ofToString(displayModeID::MIRROR + 1) + "/3", ofPoint(0, ofGetHeight() - 10));
+		break;
+	case displayModeID::INVISIBLE:
+		ofDrawBitmapStringHighlight("Display Mode: Invisible " + ofToString(displayModeID::INVISIBLE + 1) + "/3", ofPoint(0, ofGetHeight() - 10));
+		break;
+	case displayModeID::SKELETONS:
+		ofDrawBitmapStringHighlight("Display Mode: Skeletons + Mirror " + ofToString(displayModeID::SKELETONS + 1) + "/3", ofPoint(0, ofGetHeight() - 10));
+		break;
+	default:
+		break;
+	}
+}
+
+void SharedData::changeDisplayMode(int key) {
+	switch (key) {
+		case OF_KEY_LEFT:
+			displayMode--;
+			displayMode %= displayModeID::NUM_MODES;
+			break;
+		case OF_KEY_RIGHT:
+			displayMode++;
+			displayMode %= displayModeID::NUM_MODES;
+			break;
+		default:
+			break;
+	}
 }
 
 
