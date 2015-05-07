@@ -191,7 +191,6 @@ void ReachState::draw()
 {
 	ofBackground(255);
 	ofDrawBitmapString("reach", 30, 30);
- //   getSharedData().drawCorrectDisplayMode();
 	ofPushMatrix();
 	ofPushStyle();
 	ofTranslate(getSharedData().imgTransform.first);
@@ -215,9 +214,6 @@ void ReachState::draw()
 		ofPopStyle();
 		ofPopMatrix();
 	}
-	ofSetColor(255);
-	ofCircle(_colSpacePoints[0].X, _colSpacePoints[0].Y, 20);
-	ofCircle(_colSpacePoints[1].X, _colSpacePoints[1].Y, 20);
 
 	for(int i = 0; i < triggers.size(); i++) {
 		ofFill();

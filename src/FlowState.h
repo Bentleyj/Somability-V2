@@ -50,6 +50,8 @@ public:
 	void update();
 	void draw();
 	string getName();
+	void mouseDragged(int x, int y, int button);
+
 #if 0
 	void mouseReleased(int x, int y, int button);
 	void mouseMoved(int x, int y, int button);
@@ -63,6 +65,8 @@ public:
 	//void userEvent(ofxOpenNIUserEvent & event);
 private:
 
+	deque<ofVec2f> points;
+
 	void keyPressed(int k);
 
 	Array<CameraSpacePoint>^ _camSpacePoints;
@@ -71,4 +75,5 @@ private:
 	unsigned int _bytesPerPixel;
 	bool _colorFrameProcessed;
 	bool _bodiesProcessed;
+
 };

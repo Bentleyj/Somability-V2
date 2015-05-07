@@ -29,5 +29,10 @@ public:
 	static int MAX_LENGTH;
 	static int colourPos;
 	void smoothTrail();
+	void fadeOut();
+	bool getNeedsDelete();
+	bool needsDelete;
+	int fadingStep;
 	ofVboMesh mesh;
+	//ofShader shader;
 };

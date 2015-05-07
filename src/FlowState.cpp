@@ -60,12 +60,13 @@ void FlowState::update()
 	if (bodies == nullptr)
 		return;
 
-
 	int id = 0;
+	vector<int> trackedIds;
 	for (auto body : bodies)
 	{
 		if (!body->IsTracked)
 			continue;
+		trackedIds.push_back(body->TrackingId);
 		auto camsp = ref new Array<CameraSpacePoint>(body->JointCount);
 
 		for (int boneIdx = 0; boneIdx < 24; boneIdx++)
@@ -93,14 +94,14 @@ void FlowState::update()
 
 			for (int k = 0; k < NUM_TRAILS_PER_LIMB; k++)
 			{
-				int myId = id * 10000 + boneIdx * 100 + k;
+				int myId = body->TrackingId * 10000 + boneIdx * 100 + k;
 				float p = (float) k / NUM_TRAILS_PER_LIMB;
-
 				trails[myId].update(joint1Pos + limbLength * p);
 			}
 		}
 		id++;
 	}
+
 	if (id > 0)
 	{
 		map<int, Trail>::iterator it = trails.begin();
@@ -108,6 +109,27 @@ void FlowState::update()
 			(*it).second.update2();
 			it++;
 		}
+	}
+
+	vector<int> trailsToDelete;
+	for (auto trail : trails) {
+		bool found = false;
+		int trackingId = (int)(trail.first / 10000);
+		for (auto trackedId : trackedIds) {
+			if (trackingId == trackedId) found = true;
+		}
+		if (!found && !trail.second.needsDelete) {
+			trails[trail.first].fadeOut();
+		}
+	}
+	for (auto trail : trails) {
+		if (trail.second.needsDelete) {
+			trailsToDelete.push_back(trail.first);
+		}
+	}
+
+	for (auto trailToDelete : trailsToDelete) {
+		trails.erase(trailToDelete);
 	}
 }
 
@@ -141,6 +163,17 @@ void FlowState::draw()
 		(*it).second.draw();
 		it++;
 	}
+	ofMesh mesh;
+	for (int i = 0; i < points.size(); i++) {
+		//ofColor col2 = col.a = ofMap(i, points.size(), 0, 1, 0, true);
+		mesh.addColor(ofColor(255, 0, 0));
+		mesh.addVertex(points[i]);
+
+		//ofSetColor(ofColor(255, 0, 0));
+		//ofCircle(points[i], 10);
+	}
+	mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+	mesh.draw();
 
 	ofPopMatrix();
 	getSharedData().drawDisplayMode();
@@ -148,6 +181,23 @@ void FlowState::draw()
 
 void FlowState::keyPressed(int k) {
 	getSharedData().changeDisplayMode(k);
+}
+
+void FlowState::mouseDragged(int x, int y, int button) {
+	ofVec2f p = ofVec2f(x, y);
+	points.push_back(p);
+	if (points.size() > 2) {
+		ofVec2f first = p;
+		ofVec2f second = *(points.begin() + 2);
+		ofVec2f diff = first - second;
+		diff.rotate(90);
+		diff.normalize();
+		diff *= 50.0f;
+		points.push_back(p + diff);
+	}
+	while (points.size() > 20) {
+		points.pop_front();
+	}
 }
 
 #if 0

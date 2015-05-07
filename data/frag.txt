@@ -1,0 +1,20 @@
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+//varying vec4 outputColor;
+
+uniform vec4 globalColor;
+uniform float u_thickness;
+uniform vec2 u_thickness;
+
+
+float plot(vec2 st, float pct) {
+	return	smoothstep( pct-u_thickness, pct, st.y) -
+			smoothstep( pct, pct + u_thickness, st.y);
+}
+
+void main() {
+	vec2 st = gl_FragCoord.xy/u_resolution
+	gl_FragColor = globalColor;
+}

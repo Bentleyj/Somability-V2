@@ -99,6 +99,7 @@
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <PackageCertificateThumbprint>3F018E1C5ABA1F2F5E987B39771CE201B4AEEF1F</PackageCertificateThumbprint>
+    <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>Somability_UI</TargetName>
@@ -275,13 +276,8 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
     </None>
-    <None Include="data\shader.frag">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-    </None>
-    <None Include="data\shader.vert">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-    </None>
+    <None Include="data\shaders\shader.frag" />
+    <None Include="data\shaders\shader.vert" />
     <None Include="OFKinect_winrt_xaml_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -416,6 +412,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Common\ReadMe.txt" />
+    <Text Include="data\frag.txt" />
+    <Text Include="data\geom.txt" />
+    <Text Include="data\vert.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

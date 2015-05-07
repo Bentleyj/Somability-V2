@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="4AD14264-43E4-4C20-89FF-A00BDB03881D" Publisher="CN=JoelLewis" Version="1.0.0.11" />
+  <Identity Name="4AD14264-43E4-4C20-89FF-A00BDB03881D" Publisher="CN=JoelLewis" Version="1.0.0.17" />
   <Properties>
     <DisplayName>Somability</DisplayName>
     <PublisherDisplayName>Me</PublisherDisplayName>

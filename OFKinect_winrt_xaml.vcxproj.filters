@@ -43,6 +43,9 @@
     <Filter Include="data\imgs">
       <UniqueIdentifier>{1d2bf658-d4bb-4a4a-9651-dd1a46e1a1fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="data\shaders">
+      <UniqueIdentifier>{43dd9a7e-96b1-48f6-ba5f-fcefe4e98b2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.xaml.cpp" />
@@ -492,11 +495,11 @@
       <Filter>arm dlls</Filter>
     </None>
     <None Include="OFKinect_winrt_xaml_TemporaryKey.pfx" />
-    <None Include="data\shader.frag">
-      <Filter>data</Filter>
+    <None Include="data\shaders\shader.vert">
+      <Filter>data\shaders</Filter>
     </None>
-    <None Include="data\shader.vert">
-      <Filter>data</Filter>
+    <None Include="data\shaders\shader.frag">
+      <Filter>data\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -508,6 +511,15 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Common\ReadMe.txt" />
+    <Text Include="data\frag.txt">
+      <Filter>data</Filter>
+    </Text>
+    <Text Include="data\vert.txt">
+      <Filter>data</Filter>
+    </Text>
+    <Text Include="data\geom.txt">
+      <Filter>data</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\bkg-balance.png">

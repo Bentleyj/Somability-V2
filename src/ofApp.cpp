@@ -4,6 +4,8 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
+
+	ofSetLogLevel(OF_LOG_VERBOSE);
 	//enable events for all states
 	stateMachine.enableKeyEvents();
 	stateMachine.enableMouseEvents();
@@ -19,6 +21,7 @@ void ofApp::setup()
 	stateMachine.getSharedData().shapeImages[SharedData::SQUARE].loadImage("imgs/square.png");
 	stateMachine.getSharedData().shapeImages[SharedData::HEXAGON].loadImage("imgs/hexagon.png");
 	stateMachine.getSharedData().shapeImages[SharedData::TRIANGLE].loadImage("imgs/triangle.png");
+
 
 	//add all the states
 	stateMachine.addState<FlowState>();
