@@ -51,18 +51,8 @@ public:
 	void draw();
 	string getName();
 	void mouseDragged(int x, int y, int button);
-
-#if 0
-	void mouseReleased(int x, int y, int button);
-	void mouseMoved(int x, int y, int button);
-	string getName();
-	void stateEnter();
-	void stateExit();
-#endif	
-
 	map<int, Trail> trails;
 
-	//void userEvent(ofxOpenNIUserEvent & event);
 private:
 
 	deque<ofVec2f> points;

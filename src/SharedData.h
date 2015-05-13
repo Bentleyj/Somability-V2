@@ -48,6 +48,8 @@ public:
 	void closeKinect();
 	void drawDisplayMode();
 
+	vector<std::pair<ofVec2f, ofVec2f>> skeletonLines;
+
 	ofImage mirrorImage;
 
 	void drawShape(int shapeId, ofRectangle &rect);
@@ -75,8 +77,6 @@ public:
 	const static JointType Limbs[24][2];
 
 	pair<ofPoint, float> imgTransform;
-
-	ofFbo skeletonBuffer;
 
 	KinectSensor^ _kinect;
 	MultiSourceFrameReader^ _multiFrameReader;

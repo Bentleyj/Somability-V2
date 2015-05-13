@@ -8,39 +8,35 @@
 
 #define ROOT_TWO 1.414213
 
-int Trail::MAX_LENGTH = 50;
+int Trail::MAX_LENGTH = 20;
 int Trail::colourPos = 0;
 Trail::Trail() {
 	colourPos++;
 	colourPos %= 6;
 	needsDelete = false;
-fadingStep = -1;
-switch (colourPos) {
-case 0:
-	colour.set(0, 1, 0);
-	break;
-case 1:
-	colour.set(1, 0, 0);
-	break;
-case 2:
-	colour.set(1, 0, 1);
-	break;
-case 3:
-	colour.set(1, 1, 0);
-	break;
-case 4:
-	colour.set(0, 1, 1);
-	break;
-case 5:
-	colour.set(0, 0, 1);
-	break;
+	fadingStep = -1;
+	switch (colourPos) {
+		case 0:
+			colour.set(0, 1, 0);
+			break;
+		case 1:
+			colour.set(1, 0, 0);
+			break;
+		case 2:
+			colour.set(1, 0, 1);
+			break;
+		case 3:
+			colour.set(1, 1, 0);
+			break;
+		case 4:
+			colour.set(0, 1, 1);
+			break;
+		case 5:
+			colour.set(0, 0, 1);
+			break;
+	}
+	loc = IntegratorVec2f();
 }
-//	bool loaded = shader.load("vert.txt", "plotLineShader.frag");
-//if (!loaded) {
-//	cout << "not loaded" << endl;
-//}
-}
-
 
 void Trail::smoothTrail() {
 	deque<ofVec2f>::reverse_iterator it = points.rbegin();
@@ -49,24 +45,35 @@ void Trail::smoothTrail() {
 		ofVec2f &prev = (*it);
 		it++;
 		if (it != points.rend()) {
-			float h = 0.5;
-			(*it) = prev * h + (*it) * (1.f - h);
+			it++;
+			if (it != points.rend()) {
+				float h = 0.5;
+				(*it) = prev * h + (*it) * (1.f - h);
+			}
 		}
 	}
 }
 
 void Trail::update(ofVec2f p) {
-	//smoothTrail();
-	if (p.x != 0 || p.y != 0) {
-		points.push_back(p);
+	smoothTrail();
+	loc.target(p);
+	loc.update();
+	//for (int i=1; i<MAX_LENGTH; i++) {
+	//	fatLine.updatePoint(i, fatLine.getPointAtIndexInterpolated(i-1));
+	//}
+	//fatLine.updatePoint(0, p);
+	//fatLine.update();
+
+	if (loc.val.x != 0 || loc.val.y != 0) {
+		points.push_back(loc.val);
 		if (points.size() > 2) {
-			ofVec2f first = p;
+			ofVec2f first = loc.val;
 			ofVec2f second = *(points.begin() + 2);
 			ofVec2f diff = first - second;
 			diff.rotate(90);
 			diff.normalize();
 			diff *= 20.0f;
-			points.push_back(p + diff);
+			points.push_back(loc.val + diff);
 		}
 		while (points.size() > MAX_LENGTH) {
 			points.pop_front();
@@ -121,25 +128,27 @@ void Trail::draw() {
 		needsDelete = true;
 	}
 	while (it + 1 != points.end() && it != points.end()) {
-//		if(it._M_cur==NULL) break;
-//		glColor4f(colour.r, colour.g, colour.b, alpha);
-//		glVertex2f((*it).x,(*it).y);
 		colour.a = ofMap(i, numPoints, 0, 1, 0, true) - alphaLoss;
 		colour.a = (colour.a < 0.0f) ? 0.0f : colour.a;
-
 		mesh.addColor(colour);
 		mesh.addVertex(*it);
 		it++;
 		i++;
 	}
-	
+
+	mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+	mesh.draw();
+
+	//fatLine.draw();
+	//fatLine.printDebug();
+
 	//glEnd();
 	//shader.begin();
 	//shader.setUniform1f("u_width", ofGetWidth());
 	//shader.setUniform1f("u_height", ofGetHeight());
 	//shader.setUniform1f("u_thickness", 20);
-	mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
-	mesh.draw();
+	//mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+	//mesh.draw();
 	//shader.end();
 	
 	ofFill();

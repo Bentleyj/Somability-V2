@@ -31,7 +31,7 @@
  */
 #include "FlowState.h"
 
-#define NUM_TRAILS_PER_LIMB 3
+#define NUM_TRAILS_PER_LIMB 2
 
 string FlowState::getName() {
 	return "flow";

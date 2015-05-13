@@ -4,7 +4,7 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-
+	ofDisableArbTex();
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	//enable events for all states
 	stateMachine.enableKeyEvents();
@@ -30,7 +30,6 @@ void ofApp::setup()
 
 	stateMachine.getSharedData().setupKinect(FrameSourceTypes::Color | FrameSourceTypes::Body | FrameSourceTypes::BodyIndex);
 
-	stateMachine.getSharedData().skeletonBuffer.allocate(ofGetWidth(), ofGetHeight());
 	stateMachine.getSharedData()._camSpacePoints = ref new Array<CameraSpacePoint>(2);
 	stateMachine.getSharedData()._colSpacePoints = ref new Array<ColorSpacePoint>(2);
 
@@ -44,8 +43,6 @@ void ofApp::setup()
 
 	//set initial state
 	stateMachine.changeState("flow");
-
-	//stateMachine.getSharedData().setupKinect(Frame);
 }
 
 void ofApp::exit()

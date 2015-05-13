@@ -33,7 +33,6 @@
 
 #define WIDTH ofGetWidth()
 #define HEIGHT ofGetHeight()
-#define ENERGY_THRESHOLD 40.0f
 
 void BalanceState::setup() {
 	setupEvents();
@@ -46,6 +45,7 @@ void BalanceState::setup() {
 	avgCount = 0;
 	lastFireTime = 0;
 	lastEnergies.resize(120, 70);
+	energyThreshold = 40;
 	//persons.resize(144);
 
 	_camSpacePoints = ref new Array<CameraSpacePoint>(2);
@@ -135,9 +135,7 @@ void BalanceState::update()
 			float energy = (float)(10.0 * log10(sum / sampleCounter));
 			sampleCounter = sum = 0;
 			avgEnergy = energy;
-			//lastEnergies.pop_front();
-			//lastEnergies.push_back(energy);
-			if (abs(energy) < ENERGY_THRESHOLD) {
+			if (abs(energy) < energyThreshold) {
 				tryToFire();
 				break;
 			}
@@ -226,66 +224,6 @@ void BalanceState::update()
 	
 	if (shapes.size() > 0 ||  data.size() > 0) getSharedData().box2d->update();
 
-	//greyImg.set(0);
-	//unsigned char *pix = greyImg.getPixels();
-	//memset(buff, 0, VISION_WIDTH*VISION_HEIGHT);
-	//for(int i =0 ; i < numUsers; i++) {
-	//	
-	//	ofxOpenNIUser &user = getSharedData().openNIDevice.getTrackedUser(i);
-	//	unsigned char *c = user.getMaskPixels().getPixels();
-	//	if(c!=NULL) {
-	//		int nc = user.getMaskPixels().getNumChannels();
-	//			//printf("%d channels\n", nc);
-	//		
-	//		
-	//		for(int i = 0; i < 640*480; i++) {
-	//			buff[i] = (c[i*nc])>0?255:buff[i];
-	//		}
-	//		
-	//	} else {
-	//		//ofLogError() << "Pixel mask of person is null!";
-	//	}
-	//	
-	//}
-	//greyImg.setFromPixels(buff, VISION_WIDTH, VISION_HEIGHT);
-
-	//
-	//if(greyImg.getWidth()>0) {
-	//	contours.findContours(greyImg, 50, VISION_HEIGHT*VISION_HEIGHT, 20, false);
-	//}
-
-	//// resize persons array
-	//while(persons.size() < contours.blobs.size()) {
-	//	persons.push_back(new ofxBox2dEdge());
-	//}
-
-	//while(contours.blobs.size() < persons.size()) {
-	//	delete persons.back();
-	//	persons.pop_back();
-	//}
-	//
-
-	//ofVec3f contourScale(WIDTH/(float)greyImg.getWidth(),HEIGHT/(float)greyImg.getHeight());
-	//int numBlobs = contours.nBlobs;
-	//for(int blob = 0; blob < numBlobs; blob++) {
-	//	persons[blob]->clear();
-	//
-	//	for(int i = 0; i < contours.blobs[blob].nPts; i++) {
-	//		ofVec3f p = contours.blobs[blob].pts[i]*contourScale;
-	//
-	//		persons[blob]->addVertex(p);
-	//	}
-	//
-	//	persons[blob]->simplify(5);
-	////if(person->size()>2) {
-	//	persons[blob]->setPhysics(0,0,0);
-	//	persons[blob]->create(getSharedData().box2d->getWorld());
-	//	persons[blob]->flagHasChanged();
-	//	persons[blob]->updateShape();
-	//}
-	//
-	//getSharedData().box2d->update();
-
 	// remove shapes offscreen
 	//ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
 	float currTime = ofGetElapsedTimef();
@@ -297,10 +235,6 @@ void BalanceState::update()
 		}
 	}
 }
-//void BalanceState::setupGui(SomabilityGui *gui) {
-//	gui->addSlider("sensitivity", sensitivity, 0, 1);
-//	gui->addSlider("volume", displayVolume, 0, 1);
-//}
 
 void BalanceState::draw()
 {
@@ -315,30 +249,8 @@ void BalanceState::draw()
 	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
 	ofSetColor(255);
 	getSharedData().drawCorrectDisplayImage();
-	//ofSetColor(0);
-	//ofDrawBitmapString(ofToString(persons.size()), 30, 30);
 	ofSetColor(0);
-	//ofDrawBitmapString(ofToString(getSharedData().box2d->getWorld()->GetBodyCount()), 30, 30);
-	//ofDrawBitmapString(ofToString(avgEnergy), 30, 50);
 	ofPopStyle();
-
-	//getSharedData().drawCorrectDisplayMode();
-	//glPushMatrix();
-	//
-	//
-	//ofNoFill();
-	//ofSetColor(255);
-	////greyImg.draw(0,0);
-	////person->draw();
-	//ofFill();
-	//
-	//ofSetColor(255);
-	////getSharedData().openNIDevice.drawDepth(0, 0, ofGetWidth(), ofGetHeight());
-
-	//
-	//ofFill();
-	//ofSetColor(ofColor::white);
-	//
 
     for(int i=0; i<shapes.size(); i++) {
 		ofPushStyle();
@@ -370,6 +282,7 @@ void BalanceState::draw()
 	ofPopMatrix();
 
 	getSharedData().drawDisplayMode();
+	ofDrawBitmapStringHighlight("Mic Sensitivity " + ofToString(energyThreshold) + "/100", ofPoint(0, ofGetHeight() - 30));
 	//// contours.draw();
 
 	//ofSetColor(255);
@@ -386,6 +299,16 @@ void BalanceState::keyPressed(int k)
 	//changeState("choice");
 	if (k == 'f') tryToFire();
 	getSharedData().changeDisplayMode(k);
+	if (k == OF_KEY_UP) {
+		energyThreshold++;
+		energyThreshold = min(energyThreshold, 100);
+		energyThreshold = max(energyThreshold, 1);
+	}
+	if (k == OF_KEY_DOWN) {
+		energyThreshold--;
+		energyThreshold = min(energyThreshold, 100);
+		energyThreshold = max(energyThreshold, 1);
+	}
 	//if (k == 'w') addWall();
 	//mustFire = true;
 }

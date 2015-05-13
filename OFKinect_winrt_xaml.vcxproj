@@ -115,7 +115,7 @@
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(IntermediateOutputPath);%(AdditionalIncludeDirectories);..\..\..\addons\ofxBox2d\libs;..\..\..\addons\ofxBox2d\src;..\..\..\addons\ofxBox2d\libs\Box2D;..\..\..\addons\ofxBox2d\libs\Box2D\Collision;..\..\..\addons\ofxBox2d\libs\Box2D\Collision\Shapes;..\..\..\addons\ofxBox2d\libs\Box2D\Common;..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics;..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics\Contacts;..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics\Joints;..\..\..\addons\ofxBox2d\libs\Box2D\Rope;..\..\..\addons\ofxBox2d\libs\triangle;..\..\..\addons\ofxStateMachine\libs;..\..\..\addons\ofxStateMachine\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(IntermediateOutputPath);%(AdditionalIncludeDirectories);..\..\..\addons\ofxBox2d\libs;..\..\..\addons\ofxBox2d\src;..\..\..\addons\ofxBox2d\libs\Box2D;..\..\..\addons\ofxBox2d\libs\Box2D\Collision;..\..\..\addons\ofxBox2d\libs\Box2D\Collision\Shapes;..\..\..\addons\ofxBox2d\libs\Box2D\Common;..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics;..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics\Contacts;..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics\Joints;..\..\..\addons\ofxBox2d\libs\Box2D\Rope;..\..\..\addons\ofxBox2d\libs\triangle;..\..\..\addons\ofxStateMachine\libs;..\..\..\addons\ofxStateMachine\src;..\..\..\addons\ofxFX\src;..\..\..\addons\ofxFX\src\composers;..\..\..\addons\ofxFX\src\filters;..\..\..\addons\ofxFX\src\generative;..\..\..\addons\ofxFX\src\operations;..\..\..\addons\ofxFatLines\src</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4453</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -151,6 +151,7 @@
     <ClInclude Include="src\BalanceState.h" />
     <ClInclude Include="src\EventHub.h" />
     <ClInclude Include="src\FlowState.h" />
+    <ClInclude Include="src\IntegratorVec2f.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\ReachState.h" />
     <ClInclude Include="src\SharedData.h" />
@@ -276,8 +277,6 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
     </None>
-    <None Include="data\shaders\shader.frag" />
-    <None Include="data\shaders\shader.vert" />
     <None Include="OFKinect_winrt_xaml_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -343,6 +342,7 @@
     <ClCompile Include="src\BalanceState.cpp" />
     <ClCompile Include="src\EventHub.cpp" />
     <ClCompile Include="src\FlowState.cpp" />
+    <ClCompile Include="src\IntegratorVec2f.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\ReachState.cpp" />
     <ClCompile Include="src\SharedData.cpp" />
@@ -412,9 +412,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Common\ReadMe.txt" />
-    <Text Include="data\frag.txt" />
-    <Text Include="data\geom.txt" />
-    <Text Include="data\vert.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -32,7 +32,6 @@
 #pragma once
 
 #include "EventHub.h"
-//#include "Box2D.h"
 #include "ofxBox2d.h"
 #define MAX_SHAPE_AGE 10
 #define MIN_TIME_BETWEEN_FIRES  100//0.3 * 44100
@@ -40,8 +39,6 @@
 class BalanceState : public EventHub
 {
 public:
-	
-	
 	void setup();
 	void update();
 	void draw();
@@ -71,6 +68,7 @@ public:
 	ofImage circle;
 	float avgEnergy;
 	int avgCount;
+	int energyThreshold;
 
 	//ofxCvGrayscaleImage greyImg;
 	//ofxCvContourFinder contours;
@@ -103,8 +101,6 @@ public:
 	
 	map<ofxBox2dBaseShape*,ShapeData> data;
 	bool shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape);
-	//
-	///////////////////////////////////////////////////////////////////////////////////////
 	float sensitivity;
 	float displayVolume;
 };

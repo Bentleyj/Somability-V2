@@ -17,6 +17,7 @@
 
 #pragma once
 #include "ofMain.h"
+#include "IntegratorVec2f.h"
 
 class Trail {
 public:
@@ -34,5 +35,5 @@ public:
 	bool needsDelete;
 	int fadingStep;
 	ofVboMesh mesh;
-	//ofShader shader;
+	IntegratorVec2f loc;
 };

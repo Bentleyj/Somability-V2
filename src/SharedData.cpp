@@ -107,6 +107,7 @@ bool SharedData::setCorrectDisplayImage(MultiSourceFrame^ multiFrame) {
 
 		}
 		else if (displayMode == displayModeID::SKELETONS) {
+			skeletonLines.clear();
 			if (multiFrame->ColorFrameReference != nullptr && multiFrame->BodyFrameReference != nullptr)
 			{
 				auto colorFrame = multiFrame->ColorFrameReference->AcquireFrame();
@@ -116,7 +117,6 @@ bool SharedData::setCorrectDisplayImage(MultiSourceFrame^ multiFrame) {
 
 				if (colorFrame != nullptr && bodies != nullptr)
 				{
-					bool noBodiesTracked = true;
 					for (auto body : bodies) {
 						if (!body->IsTracked)
 							continue;
@@ -146,55 +146,29 @@ bool SharedData::setCorrectDisplayImage(MultiSourceFrame^ multiFrame) {
 					int height = _kinect->ColorFrameSource->FrameDescription->Height;
 					int width = _kinect->ColorFrameSource->FrameDescription->Width;
 					mirrorImage.setFromPixels(_colorPixels->Data, width, height, ofImageType::OF_IMAGE_COLOR_ALPHA);
-					skeletonBuffer.begin();
-						ofPushStyle();
-						ofSetColor(255);
-						mirrorImage.draw(0, 0);
-						ofSetColor(255, 0, 0);
-						if (bones.size() > 0) {
-							for (auto bone : bones) {
-								ofLine(bone.first, bone.second);
-							}
-						}
-						ofPopStyle();
-						//ofRect(ofGetWidth()/2, ofGetHeight()/2, 100, 100);
-						skeletonBuffer.end();
-					skeletonBuffer.readToPixels(mirrorImage);
 					mirrorImage.update();
+					if (bones.size() > 0) {
+						for (auto bone : bones) {
+							skeletonLines.push_back(make_pair(bone.first, bone.second));
+						}
+					}
 				}
 			}
 		}
-		//else if (displayMode == displayModeID::SILHOUETTE) {
-		//	if (multiFrame->BodyIndexFrameReference != nullptr)
-		//	{
-		//		auto bodyIndexFrame = multiFrame->BodyIndexFrameReference->AcquireFrame();
-
-		//		if (bodyIndexFrame != nullptr)
-		//		{
-		//			bodyIndexFrame->CopyFrameDataToArray(_bodyIndexPixels);
-
-		//			_frameProcessed = true;
-		//		}
-		//		if (_frameProcessed) {
-		//			int height = _kinect->BodyIndexFrameSource->FrameDescription->Height;
-		//			int width = _kinect->BodyIndexFrameSource->FrameDescription->Width;
-		//			silhouetteImage.setFromPixels(_bodyIndexPixels->Data, width, height, ofImageType::OF_IMAGE_COLOR_ALPHA);
-		//			return _frameProcessed;
-
-		//		}
-		//		else {
-		//			silhouetteImage.setColor(ofColor(0));
-		//			return _frameProcessed;
-		//		}
-		//	}
-		//	return true;
-		//}
 	}
 	return _frameProcessed;
 }
 
 void SharedData::drawCorrectDisplayImage() {
 	mirrorImage.draw(0, 0);
+	if (displayMode == displayModeID::SKELETONS) {
+		ofPushStyle();
+		ofSetColor(0);
+		for (auto skeleLine : skeletonLines) {
+			ofLine(skeleLine.first, skeleLine.second);
+		}
+		ofPopStyle();
+	}
 }
 
 Vector<Body^>^ SharedData::getBodies(MultiSourceFrame^ multiFrame) {
