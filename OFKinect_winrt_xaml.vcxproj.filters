@@ -43,6 +43,9 @@
     <Filter Include="data\imgs">
       <UniqueIdentifier>{1d2bf658-d4bb-4a4a-9651-dd1a46e1a1fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="data\fonts">
+      <UniqueIdentifier>{ae303c80-f3c5-49f9-af05-fb9df69b7590}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.xaml.cpp" />
@@ -498,6 +501,8 @@
       <Filter>arm dlls</Filter>
     </None>
     <None Include="OFKinect_winrt_xaml_TemporaryKey.pfx" />
+    <None Include="Package.StoreAssociation.xml" />
+    <None Include="OFKinect_winrt_xaml_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="DirectXPage.xaml" />
@@ -618,5 +623,10 @@
     <Image Include="data\imgs\square.png">
       <Filter>data\imgs</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="data\fonts\verdana.ttf">
+      <Filter>data\fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

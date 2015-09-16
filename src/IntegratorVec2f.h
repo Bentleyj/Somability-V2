@@ -31,6 +31,5 @@ public:
 	float damping;
 	float attraction;
 	bool targeting;
-
 };
 

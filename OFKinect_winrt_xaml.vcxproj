@@ -95,10 +95,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <PackageCertificateKeyFile>OFKinect_winrt_xaml_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>OFKinect_winrt_xaml_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>3F018E1C5ABA1F2F5E987B39771CE201B4AEEF1F</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>1B8F60B152BFDC2E8AE19CC06F9842F0D0DEFB00</PackageCertificateThumbprint>
     <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -277,6 +277,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
     </None>
+    <None Include="OFKinect_winrt_xaml_StoreKey.pfx" />
     <None Include="OFKinect_winrt_xaml_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -412,6 +413,12 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Common\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Package.StoreAssociation.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="data\fonts\verdana.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

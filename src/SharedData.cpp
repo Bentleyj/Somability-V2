@@ -30,6 +30,10 @@ const JointType SharedData::Limbs[24][2] = {
 	{ JointType::Neck, JointType::Head }
 };
 
+//ofColor convertIDToColor(int ID) {
+//
+//}
+
 void SharedData::setupKinect(FrameSourceTypes  frameSourceTypes) {
 	_kinect = KinectSensor::GetDefault();
 	if (_kinect != nullptr)
@@ -106,6 +110,38 @@ bool SharedData::setCorrectDisplayImage(MultiSourceFrame^ multiFrame) {
 			mirrorImage.clear();
 
 		}
+		else if (displayMode == displayModeID::SILHOUETTE) {
+			if (multiFrame->BodyIndexFrameReference != nullptr && multiFrame->BodyFrameReference != nullptr) {
+				auto bodyIndexFrame = multiFrame->BodyIndexFrameReference->AcquireFrame();
+				auto bodyFrame = multiFrame->BodyFrameReference->AcquireFrame();
+				if (bodyIndexFrame != nullptr) {
+					bodyIndexFrame->CopyFrameDataToArray(_bodyIndexPixels);
+					_frameProcessed = true;
+				}
+				if (_frameProcessed) {
+					int height = _kinect->BodyIndexFrameSource->FrameDescription->Height;
+					int width = _kinect->BodyIndexFrameSource->FrameDescription->Width;
+					int k = 0;
+					for (int i = 0; i < height; i++) {
+						for (int j = 0; j < width; j++) {
+							if (_bodyIndexPixels[i*width + j] == 255) {
+								_colorPixels[k] = 0;
+								_colorPixels[k + 1] = 0;
+								_colorPixels[k + 2] = 0;
+							}
+							else {
+								_colorPixels[k] = _bodyIndexPixels[i*width + j]%4 * 65 + 127;
+								_colorPixels[k + 1] = _bodyIndexPixels[i*width + j]%3 * 65 + 127;
+								_colorPixels[k + 2] = _bodyIndexPixels[i*width + j]%2 * 65 + 127;
+							}
+							k += 3;
+						}
+						cout << endl;
+					}
+					mirrorImage.setFromPixels(_colorPixels->Data, width, height, ofImageType::OF_IMAGE_COLOR);
+				}
+			}
+		}
 		else if (displayMode == displayModeID::SKELETONS) {
 			skeletonLines.clear();
 			if (multiFrame->ColorFrameReference != nullptr && multiFrame->BodyFrameReference != nullptr)
@@ -160,8 +196,12 @@ bool SharedData::setCorrectDisplayImage(MultiSourceFrame^ multiFrame) {
 }
 
 void SharedData::drawCorrectDisplayImage() {
-	mirrorImage.draw(0, 0);
+	ofRectangle box = font.getStringBoundingBox("Kinect Not Found", 0, 0);
+	ofSetColor(0);
+	font.drawString("Kinect Not Found", ofGetWidth() / 2 - box.width / 2, ofGetHeight() / 2 - box.height / 2);
 	if (displayMode == displayModeID::SKELETONS) {
+		ofSetColor(255);
+		mirrorImage.draw(0, 0);
 		ofPushStyle();
 		ofSetColor(0);
 		for (auto skeleLine : skeletonLines) {
@@ -169,7 +209,21 @@ void SharedData::drawCorrectDisplayImage() {
 		}
 		ofPopStyle();
 	}
+	if (displayMode == displayModeID::INVISIBLE) {
+		ofSetColor(255);
+		ofSetRectMode(OF_RECTMODE_CORNER);
+		ofRect(0, 0, ofGetWidth(), ofGetHeight());
+	}
+	if (displayMode == displayModeID::MIRROR) {
+		ofSetColor(255);
+		mirrorImage.draw(0, 0);
+	}
+	if (displayMode == displayModeID::SILHOUETTE) {
+		ofSetColor(255);
+		mirrorImage.drawSubsection(0, 0, ofGetWidth(), ofGetWidth() * 424/512, 0, 0, 512, 424);
+	}
 }
+
 
 Vector<Body^>^ SharedData::getBodies(MultiSourceFrame^ multiFrame) {
 	 _frameProcessed = false;
@@ -206,7 +260,6 @@ void SharedData::setImageTransform(int width, int height, int targetWidth, int t
 	float xScale = (float)targetWidth / width;
 	float yScale = (float)targetHeight / height;
 	pair<ofPoint, float> returnTransform;
-	//float scale = std::min(xScale, yScale);
 	if (xScale <= yScale) {
 		float scale = xScale;
 		int x = 0;
@@ -228,19 +281,24 @@ void SharedData::drawShape(int shapeId, ofRectangle &rect) {
 }
 
 void SharedData::drawDisplayMode() {
+	float height = smallFont.getStringBoundingBox("Display Mode: Mirror " + ofToString(displayModeID::MIRROR + 1) + "/4. Navigate with arrow keys or numbers 1 - 4.", 0, 0).height;
 	switch (displayMode)
 	{
-	case displayModeID::MIRROR :
-		ofDrawBitmapStringHighlight("Display Mode: Mirror " + ofToString(displayModeID::MIRROR + 1) + "/3", ofPoint(0, ofGetHeight() - 10));
-		break;
-	case displayModeID::INVISIBLE:
-		ofDrawBitmapStringHighlight("Display Mode: Invisible " + ofToString(displayModeID::INVISIBLE + 1) + "/3", ofPoint(0, ofGetHeight() - 10));
-		break;
-	case displayModeID::SKELETONS:
-		ofDrawBitmapStringHighlight("Display Mode: Skeletons + Mirror " + ofToString(displayModeID::SKELETONS + 1) + "/3", ofPoint(0, ofGetHeight() - 10));
-		break;
-	default:
-		break;
+		case displayModeID::MIRROR:
+			smallFont.drawString("Display Mode: Mirror " + ofToString(displayModeID::MIRROR + 1) + "/4. Navigate with arrow keys or numbers 1 - 4.", 10, ofGetHeight() - height);
+			break;
+		case displayModeID::INVISIBLE:
+			smallFont.drawString("Display Mode: Invisible " + ofToString(displayModeID::INVISIBLE + 1) + "/4. Navigate with arrow keys or numbers 1 - 4.", 10, ofGetHeight() - height);
+			break;
+		case displayModeID::SKELETONS:
+			smallFont.drawString("Display Mode: Skeletons + Mirror " + ofToString(displayModeID::SKELETONS + 1) + "/4. Navigate with arrow keys or numbers 1 - 4.", 10, ofGetHeight() - height);
+			break;
+		case displayModeID::SILHOUETTE:
+			ofSetColor(255);
+			smallFont.drawString("Display Mode: Silhouette " + ofToString(displayModeID::SILHOUETTE + 1) + "/4. Navigate with arrow keys or numbers 1 - 4.", 10, ofGetHeight() - height);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -248,15 +306,32 @@ void SharedData::changeDisplayMode(int key) {
 	switch (key) {
 		case OF_KEY_LEFT:
 			displayMode--;
+			if (displayMode < 0) displayMode = displayModeID::NUM_MODES - 1;
 			displayMode %= displayModeID::NUM_MODES;
 			break;
 		case OF_KEY_RIGHT:
 			displayMode++;
 			displayMode %= displayModeID::NUM_MODES;
 			break;
+		case '1':
+			displayMode = displayModeID::MIRROR;
+			break;
+		case '2':
+			displayMode = displayModeID::INVISIBLE;
+			break;
+		case '3':
+			displayMode = displayModeID::SKELETONS;
+			break;
+		case '4':
+			displayMode = displayModeID::SILHOUETTE;
+			break;
 		default:
 			break;
 	}
+}
+
+void SharedData::keyboardStateChange(int key) {
+
 }
 
 

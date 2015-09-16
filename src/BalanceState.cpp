@@ -243,16 +243,16 @@ void BalanceState::draw()
 
 	ofPushMatrix();
 	ofPushStyle();
-	ofNoFill();
+	//ofNoFill();
 	ofSetColor(255);
 	ofTranslate(getSharedData().imgTransform.first);
 	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
 	ofSetColor(255);
 	getSharedData().drawCorrectDisplayImage();
-	ofSetColor(0);
 	ofPopStyle();
 
-    for(int i=0; i<shapes.size(); i++) {
+	ofSetColor(255);
+	for(int i=0; i<shapes.size(); i++) {
 		ofPushStyle();
 		ofSetRectMode(OF_RECTMODE_CENTER);
 		getSharedData().drawShape(SharedData::CIRCLE, ofRectangle(shapes[i].get()->getPosition().x, shapes[i].get()->getPosition().y, 56, 56));
@@ -261,7 +261,7 @@ void BalanceState::draw()
 		//circle.draw(c->getPosition().x, c->getPosition().y, c->getRadius()*2, c->getRadius()*2);
 		//shapes[i].get()->draw();
 	}
-	ofDrawBitmapString(ofToString(ofGetMouseX()) + ", " + ofToString(ofGetMouseY()), ofGetMouseX() + 10, ofGetMouseY() + 10);
+	//ofDrawBitmapString(ofToString(ofGetMouseX()) + ", " + ofToString(ofGetMouseY()), ofGetMouseX() + 10, ofGetMouseY() + 10);
 
 	//for (auto person : persons) {
 	//	ofSetColor(255);
@@ -277,16 +277,23 @@ void BalanceState::draw()
 	ofPushMatrix();
 	ofTranslate(WIDTH,HEIGHT/2, 0);
 	ofRotate(ofRadToDeg(shootingAngle),0,0,1);
-	ofSetColor(255);
+	if (getSharedData().displayMode == getSharedData().displayModeID::INVISIBLE) ofSetColor(0);
+	else ofSetColor(255);
 	gun.draw(0,0);
 	ofPopMatrix();
 
+	ofPushStyle();
+	ofSetColor(0);
 	getSharedData().drawDisplayMode();
-	ofDrawBitmapStringHighlight("Mic Sensitivity " + ofToString(energyThreshold) + "/100", ofPoint(0, ofGetHeight() - 30));
-	//// contours.draw();
-
+	float height = getSharedData().smallFont.getStringBoundingBox("Mic Sensitivity " + ofToString(energyThreshold) + "/100. Control with up and down arrows.", 0, 0).height;
+	getSharedData().smallFont.drawString("Mic Sensitivity " + ofToString(energyThreshold) + "/100. Control with up and down arrows.", 10, ofGetHeight() - height * 2);
+	ofPopStyle();
 	//ofSetColor(255);
-	////ofDrawBitmapString("Use the up and down arrow keys to change audio sensitivity ("+ofToString(sensitivity)+" / 100)", 5, 60);
+	// ofDrawBitmapStringHighlight("Mic Sensitivity " + ofToString(energyThreshold) + "/100", ofPoint(0, ofGetHeight() - 30));
+	// contours.draw();
+
+	// ofSetColor(255);
+	// ofDrawBitmapString("Use the up and down arrow keys to change audio sensitivity ("+ofToString(sensitivity)+" / 100)", 5, 60);
 }
 
 string BalanceState::getName()
@@ -299,6 +306,15 @@ void BalanceState::keyPressed(int k)
 	//changeState("choice");
 	if (k == 'f') tryToFire();
 	getSharedData().changeDisplayMode(k);
+	//if (k == '1') {
+	//	changeState("reach");
+	//}
+	//if (k == '2') {
+	//	changeState("flow");
+	//}
+	//if (k == '3') {
+	//	changeState("balance");
+	//}
 	if (k == OF_KEY_UP) {
 		energyThreshold++;
 		energyThreshold = min(energyThreshold, 100);

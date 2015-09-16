@@ -47,6 +47,8 @@ public:
 	bool isKinectOpen();
 	void closeKinect();
 	void drawDisplayMode();
+	void keyboardStateChange(int key);
+	ofTrueTypeFont font, smallFont;
 
 	vector<std::pair<ofVec2f, ofVec2f>> skeletonLines;
 
@@ -67,6 +69,7 @@ public:
 		MIRROR,
 		INVISIBLE,
 		SKELETONS,
+		SILHOUETTE,
 		NUM_MODES
 	};
 

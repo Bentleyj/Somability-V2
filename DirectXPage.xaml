@@ -22,7 +22,7 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-                <Button Tag="reach" Style="{StaticResource BigButton}" Width="350" Height="350" Margin="0,30,30,30" Click="Button_Click">
+                <Button Tag="reach" Style="{StaticResource BigButton}" Width="350" Height="350" Margin="0,30,30,30" Click="Button_Click" AutomationProperties.Name="Reach">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -36,7 +36,7 @@
                     </Grid>
                 </Button>
 
-                <Button Tag="flow" Style="{StaticResource BigButton}" Width="350" Height="350" Margin="0,30,30,30" Click="Button_Click">
+                <Button Tag="flow" Style="{StaticResource BigButton}" Width="350" Height="350" Margin="0,30,30,30" Click="Button_Click" AutomationProperties.Name="Flow">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -50,7 +50,7 @@
                     </Grid>
                 </Button>
 
-                <Button Tag="balance" Style="{StaticResource BigButton}" Width="350" Height="350" Margin="0,30,0,30" Click="Button_Click">
+                <Button Tag="balance" Style="{StaticResource BigButton}" Width="350" Height="350" Margin="0,30,0,30" Click="Button_Click" AutomationProperties.Name="Balance">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />

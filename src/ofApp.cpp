@@ -10,6 +10,11 @@ void ofApp::setup()
 	stateMachine.enableKeyEvents();
 	stateMachine.enableMouseEvents();
 
+	//load Shared Font
+	stateMachine.getSharedData().font.loadFont("fonts/verdana.ttf", 30);
+	stateMachine.getSharedData().smallFont.loadFont("fonts/verdana.ttf", 10);
+
+
 	//set up variables in shared data
 	stateMachine.getSharedData().box2d->init();
 	stateMachine.getSharedData().box2d->setGravity(0, 5);
@@ -21,7 +26,6 @@ void ofApp::setup()
 	stateMachine.getSharedData().shapeImages[SharedData::SQUARE].loadImage("imgs/square.png");
 	stateMachine.getSharedData().shapeImages[SharedData::HEXAGON].loadImage("imgs/hexagon.png");
 	stateMachine.getSharedData().shapeImages[SharedData::TRIANGLE].loadImage("imgs/triangle.png");
-
 
 	//add all the states
 	stateMachine.addState<FlowState>();
@@ -39,7 +43,7 @@ void ofApp::setup()
 
 	stateMachine.getSharedData().setImageTransform(width, height, ofGetWidth(), ofGetHeight());
 
-	stateMachine.getSharedData().displayMode = stateMachine.getSharedData().SKELETONS;
+	stateMachine.getSharedData().displayMode = stateMachine.getSharedData().MIRROR;
 
 	//set initial state
 	stateMachine.changeState("flow");

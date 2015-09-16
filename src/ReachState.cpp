@@ -233,7 +233,10 @@ void ReachState::draw()
 		//ofRotateZ(triggers[i].second);
 		getSharedData().drawShape(triggers[i].first.first, triggers[i].first.second);
 	}
-	getSharedData().drawDisplayMode();
+	ofPushStyle();
+		ofSetColor(0);
+		getSharedData().drawDisplayMode();
+	ofPopStyle();
 }
 
 string ReachState::getName()
@@ -244,23 +247,32 @@ string ReachState::getName()
 //--------------------------------------------------------------
 void ReachState::keyPressed(int k) {
 
-	ofVec2f m(ofGetMouseX(), ofGetMouseY());
+	//ofVec2f m(ofGetMouseX(), ofGetMouseY());
 	//ofVec2f x(getSharedData().openNIDevice.getWidth(), getSharedData().openNIDevice.getHeight());
 	//ofVec2f s(WIDTH, HEIGHT);
 	
 	//m = m*x/s;
-	
-	if(k=='j') {
-		addShape(SharedData::CIRCLE, m);
-	} else if(k=='k') {
-		addShape(SharedData::HEXAGON, m);
-	} else if(k=='l') {
-		addShape(SharedData::TRIANGLE, m);
-	} else if(k==';') {
-		addShape(SharedData::SQUARE, m);
-	}
+	//
+	//if(k=='j') {
+	//	addShape(SharedData::CIRCLE, m);
+	//} else if(k=='k') {
+	//	addShape(SharedData::HEXAGON, m);
+	//} else if(k=='l') {
+	//	addShape(SharedData::TRIANGLE, m);
+	//} else if(k==';') {
+	//	addShape(SharedData::SQUARE, m);
+	//}
 
 	getSharedData().changeDisplayMode(k);
+	//if (k == '1') {
+	//	changeState("reach");
+	//}
+	//if (k == '2') {
+	//	changeState("flow");
+	//}
+	//if (k == '3') {
+	//	changeState("balance");
+	//}
 
 }
 //

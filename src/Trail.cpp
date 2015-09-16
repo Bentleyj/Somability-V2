@@ -58,11 +58,6 @@ void Trail::update(ofVec2f p) {
 	smoothTrail();
 	loc.target(p);
 	loc.update();
-	//for (int i=1; i<MAX_LENGTH; i++) {
-	//	fatLine.updatePoint(i, fatLine.getPointAtIndexInterpolated(i-1));
-	//}
-	//fatLine.updatePoint(0, p);
-	//fatLine.update();
 
 	if (loc.val.x != 0 || loc.val.y != 0) {
 		points.push_back(loc.val);

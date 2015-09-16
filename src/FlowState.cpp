@@ -176,28 +176,38 @@ void FlowState::draw()
 	mesh.draw();
 
 	ofPopMatrix();
+	ofSetColor(0);
 	getSharedData().drawDisplayMode();
 }
 
 void FlowState::keyPressed(int k) {
 	getSharedData().changeDisplayMode(k);
+	//if (k == '1') {
+	//	changeState("reach");
+	//}
+	//if (k == '2') {
+	//	changeState("flow");
+	//}
+	//if (k == '3') {
+	//	changeState("balance");
+	//}
 }
 
 void FlowState::mouseDragged(int x, int y, int button) {
-	ofVec2f p = ofVec2f(x, y);
-	points.push_back(p);
-	if (points.size() > 2) {
-		ofVec2f first = p;
-		ofVec2f second = *(points.begin() + 2);
-		ofVec2f diff = first - second;
-		diff.rotate(90);
-		diff.normalize();
-		diff *= 50.0f;
-		points.push_back(p + diff);
-	}
-	while (points.size() > 20) {
-		points.pop_front();
-	}
+	//ofVec2f p = ofVec2f(x, y);
+	//points.push_back(p);
+	//if (points.size() > 2) {
+	//	ofVec2f first = p;
+	//	ofVec2f second = *(points.begin() + 2);
+	//	ofVec2f diff = first - second;
+	//	diff.rotate(90);
+	//	diff.normalize();
+	//	diff *= 50.0f;
+	//	points.push_back(p + diff);
+	//}
+	//while (points.size() > 20) {
+	//	points.pop_front();
+	//}
 }
 
 #if 0
