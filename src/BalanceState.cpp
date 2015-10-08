@@ -264,7 +264,6 @@ void BalanceState::draw()
 		//shapes[i].get()->draw();
 	}
 
-	ofPopMatrix();
 	//ofDrawBitmapString(ofToString(ofGetMouseX()) + ", " + ofToString(ofGetMouseY()), ofGetMouseX() + 10, ofGetMouseY() + 10);
 
 	//for (auto person : persons) {
@@ -277,11 +276,12 @@ void BalanceState::draw()
 
 	// draw the cannon
 	ofPushMatrix();
-	ofTranslate(WIDTH,HEIGHT/2, 0);
+	ofTranslate(getSharedData().colFrameWidth, getSharedData().colFrameHeight / 2, 0);
 	ofRotate(ofRadToDeg(shootingAngle),0,0,1);
 	if (getSharedData().displayMode == getSharedData().displayModeID::INVISIBLE) ofSetColor(0);
 	else ofSetColor(255);
 	gun.draw(0,0);
+	ofPopMatrix();
 	ofPopMatrix();
 
 	ofPushStyle();
@@ -290,6 +290,7 @@ void BalanceState::draw()
 	float height = getSharedData().smallFont.getStringBoundingBox("Mic Sensitivity " + ofToString(energyThreshold) + "/100. Control with up and down arrows.", 0, 0).height;
 	getSharedData().smallFont.drawString("Mic Sensitivity " + ofToString(energyThreshold) + "/100. Control with up and down arrows.", 10, ofGetHeight() - height * 2);
 	ofPopStyle();
+
 	//ofSetColor(255);
 	// ofDrawBitmapStringHighlight("Mic Sensitivity " + ofToString(energyThreshold) + "/100", ofPoint(0, ofGetHeight() - 30));
 	// contours.draw();

@@ -238,11 +238,11 @@ void ReachState::draw()
 		//ofRotateZ(triggers[i].second);
 		getSharedData().drawShape(triggers[i].first.first, triggers[i].first.second);
 	}
+	ofPopMatrix();
 	ofPushStyle();
 		ofSetColor(0);
 		getSharedData().drawDisplayMode();
 	ofPopStyle();
-	ofPopMatrix();
 
 }
 
