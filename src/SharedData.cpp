@@ -220,7 +220,7 @@ void SharedData::drawCorrectDisplayImage() {
 	}
 	if (displayMode == displayModeID::SILHOUETTE) {
 		ofSetColor(255);
-		mirrorImage.drawSubsection(0, 0, ofGetWidth(), ofGetWidth() * 424/512, 0, 0, 512, 424);
+		mirrorImage.drawSubsection(0, 0, colFrameWidth, colFrameHeight * 424/512, 0, 0, 512, 424);
 	}
 }
 
