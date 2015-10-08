@@ -71,12 +71,12 @@ void BalanceState::setup() {
 	//buff = new unsigned char[VISION_WIDTH*VISION_HEIGHT];
 }
 
-void BalanceState::shoot() {
+void BalanceState::shoot(int ix, int iy) {
 	ofxBox2dCircle *c = new ofxBox2dCircle();
 	//ofxBox2dRect *c = new ofxBox2dRect();
 	float r = 28;//ofRandom(23, 28);
 	c->setPhysics(3.0, 0.53, 0.1);
-	c->setup(getSharedData().box2d->getWorld(), WIDTH, HEIGHT/2, r);
+	c->setup(getSharedData().box2d->getWorld(), ix, iy, r);
 	ofVec2f v(-20,0);
 	v.rotateRad(shootingAngle);
 	c->setVelocity(v);
@@ -110,16 +110,18 @@ void BalanceState::update()
 
 	shootingAngle = ofMap(sin(ofGetElapsedTimef()/3), -1, 1, -PI/8, PI/4);
 
-	if(mustFire) {
-	//	boing.play();
-		shoot();
-		mustFire = false;
-	}
-
 	auto multiFrame = getSharedData().getMultiSourceFrame();
 	auto bodies = getSharedData().getBodies(multiFrame);
 	getSharedData().setCorrectDisplayImage(multiFrame);
 	auto audioFrame = getSharedData().getAudioFrame();
+
+	if (mustFire) {
+		//	boing.play();
+		int initialX = getSharedData().colFrameWidth;
+		int initialY = getSharedData().colFrameHeight/2;
+		shoot(initialX, initialY);
+		mustFire = false;
+	}
 
 	if (audioFrame != nullptr) {
 		int stride = sizeof(float);
@@ -228,7 +230,7 @@ void BalanceState::update()
 	//ofRemove(shapes, ofxBox2dBaseShape::shouldRemoveOffScreen);
 	float currTime = ofGetElapsedTimef();
 	for(int i =0 ; i < shapes.size(); i++) {
-		if(ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) || shapeIsTooOld(currTime, shapes[i].get())) {
+		if(/*ofxBox2dBaseShape::shouldRemoveOffScreen(shapes[i]) ||*/ shapeIsTooOld(currTime, shapes[i].get())) {
 			data.erase(shapes[i].get());
 			shapes.erase(shapes.begin() + i);
 			i--;
@@ -261,6 +263,8 @@ void BalanceState::draw()
 		//circle.draw(c->getPosition().x, c->getPosition().y, c->getRadius()*2, c->getRadius()*2);
 		//shapes[i].get()->draw();
 	}
+
+	ofPopMatrix();
 	//ofDrawBitmapString(ofToString(ofGetMouseX()) + ", " + ofToString(ofGetMouseY()), ofGetMouseX() + 10, ofGetMouseY() + 10);
 
 	//for (auto person : persons) {
@@ -270,8 +274,6 @@ void BalanceState::draw()
 	//		edge->draw();
 	//	}
 	//}
-
-	ofPopMatrix();
 
 	// draw the cannon
 	ofPushMatrix();
@@ -341,19 +343,19 @@ void BalanceState::tryToFire() {
 }
 
 void BalanceState::stateEnter() {
-	/*if (data.size() > 0) 	data.clear();
-	if (shapes.size() > 0)	shapes.clear();
-	vector<b2Body*> bodies;
-	b2Body* body = getSharedData().box2d->getWorld()->GetBodyList();
-	while (body != NULL) {
-		bodies.push_back(body);
-		body = body->GetNext();
-	}
-	for (auto bodyToDelete : bodies) {
-		getSharedData().box2d->getWorld()->DestroyBody(bodyToDelete);
-	}
+	//if (data.size() > 0) 	data.clear();
+	//if (shapes.size() > 0)	shapes.clear();
+	//vector<b2Body*> bodies;
+	//b2Body* body = getSharedData().box2d->getWorld()->GetBodyList();
+	//while (body != NULL) {
+	//	bodies.push_back(body);
+	//	body = body->GetNext();
+	//}
+	//for (auto bodyToDelete : bodies) {
+	//	getSharedData().box2d->getWorld()->DestroyBody(bodyToDelete);
+	//}
 
-	getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());*/
+	//getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());
 }
 
 void BalanceState::stateExit() {
@@ -370,7 +372,7 @@ void BalanceState::stateExit() {
 		getSharedData().box2d->getWorld()->DestroyBody(bodyToDelete);
 	}
 
-	getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());
+	getSharedData().box2d->createBounds(0, 0, getSharedData().colFrameWidth, getSharedData().colFrameHeight);
 }
 //
 //

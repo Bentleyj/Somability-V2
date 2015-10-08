@@ -47,7 +47,7 @@ public:
 
 	void stateEnter();
 	void stateExit();
-	void shoot();
+	void shoot(int initialX, int initialY);
 	void tryToFire();
 	void buildWalls();
 

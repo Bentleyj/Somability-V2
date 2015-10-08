@@ -14,13 +14,6 @@ void ofApp::setup()
 	stateMachine.getSharedData().font.loadFont("fonts/verdana.ttf", 30);
 	stateMachine.getSharedData().smallFont.loadFont("fonts/verdana.ttf", 10);
 
-
-	//set up variables in shared data
-	stateMachine.getSharedData().box2d->init();
-	stateMachine.getSharedData().box2d->setGravity(0, 5);
-	stateMachine.getSharedData().box2d->createBounds(0, 0, ofGetWidth(), ofGetHeight());
-	stateMachine.getSharedData().box2d->setFPS(30.0);
-
 	//Load Images
 	stateMachine.getSharedData().shapeImages[SharedData::CIRCLE].loadImage("imgs/circle.png");
 	stateMachine.getSharedData().shapeImages[SharedData::SQUARE].loadImage("imgs/square.png");
@@ -37,11 +30,18 @@ void ofApp::setup()
 	stateMachine.getSharedData()._camSpacePoints = ref new Array<CameraSpacePoint>(2);
 	stateMachine.getSharedData()._colSpacePoints = ref new Array<ColorSpacePoint>(2);
 
+	//load size of color stream
 
-	int width = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Width;
-	int height = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Height;
+	stateMachine.getSharedData().colFrameWidth = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Width;
+	stateMachine.getSharedData().colFrameHeight = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Height;
 
-	stateMachine.getSharedData().setImageTransform(width, height, ofGetWidth(), ofGetHeight());
+	//set up variables in shared data for box2d
+	stateMachine.getSharedData().box2d->init();
+	stateMachine.getSharedData().box2d->setGravity(0, 5);
+	stateMachine.getSharedData().box2d->createBounds(0, 0, stateMachine.getSharedData().colFrameWidth, stateMachine.getSharedData().colFrameHeight);
+	stateMachine.getSharedData().box2d->setFPS(30.0);
+
+	stateMachine.getSharedData().setImageTransform(stateMachine.getSharedData().colFrameWidth, stateMachine.getSharedData().colFrameHeight, ofGetWidth(), ofGetHeight());
 
 	stateMachine.getSharedData().displayMode = stateMachine.getSharedData().MIRROR;
 
@@ -115,7 +115,7 @@ void ofApp::mouseReleased(int x, int y, int button)
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h)
 {
-//	_img.resize(w, h);
+	stateMachine.getSharedData().setImageTransform(stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Width, stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Height, w, h);
 }
 
 //--------------------------------------------------------------

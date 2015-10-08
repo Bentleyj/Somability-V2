@@ -49,6 +49,8 @@ public:
 	void drawDisplayMode();
 	void keyboardStateChange(int key);
 	ofTrueTypeFont font, smallFont;
+	int colFrameWidth;
+	int colFrameHeight;
 
 	vector<std::pair<ofVec2f, ofVec2f>> skeletonLines;
 

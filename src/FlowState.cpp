@@ -150,11 +150,9 @@ void FlowState::draw()
 	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
 	ofSetColor(255);
 	getSharedData().drawCorrectDisplayImage();
-	ofPopMatrix();
 
 	ofSetColor(0);
 	
-	ofPushMatrix();
 	//ofScale
 	//ofSetLineWidth(75.0f);
 

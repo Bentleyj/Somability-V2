@@ -77,6 +77,7 @@ public:
 	map<ofxBox2dBaseShape*,ShapeData> data;
 	bool shapeIsTooOld(float currTime, ofxBox2dBaseShape *shape);
 	void setColorForShape(SharedData::ShapeID t);
+	void initTriggers();
 	//
 	//
 	vector<pair<pair<SharedData::ShapeID, ofRectangle>, float>> triggers;
