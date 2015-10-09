@@ -42,6 +42,9 @@ void ofApp::setup()
 	stateMachine.getSharedData().activeFrameWidth = stateMachine.getSharedData().colFrameWidth;
 	stateMachine.getSharedData().activeFrameHeight = stateMachine.getSharedData().colFrameHeight;
 
+	//set Mesh Mode for skeleton Mesh
+	stateMachine.getSharedData().skeletonMesh.setMode(OF_PRIMITIVE_TRIANGLES);
+
 	//set up variables in shared data for box2d
 	stateMachine.getSharedData().box2d->init();
 	stateMachine.getSharedData().box2d->setGravity(0, 5);

@@ -57,6 +57,7 @@ public:
 	int activeFrameHeight;
 
 	vector<std::pair<ofVec2f, ofVec2f>> skeletonLines;
+	ofMesh skeletonMesh;
 
 	ofImage mirrorImage;
 

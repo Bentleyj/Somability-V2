@@ -173,7 +173,6 @@ bool SharedData::setCorrectDisplayImage(MultiSourceFrame^ multiFrame) {
 							bones.push_back(bone);
 						}
 					}
-
 					colorFrame->CopyConvertedFrameDataToArray(_colorPixels, ColorImageFormat::Rgba);
 
 					_frameProcessed = true;
@@ -183,9 +182,22 @@ bool SharedData::setCorrectDisplayImage(MultiSourceFrame^ multiFrame) {
 					int width = _kinect->ColorFrameSource->FrameDescription->Width;
 					mirrorImage.setFromPixels(_colorPixels->Data, width, height, ofImageType::OF_IMAGE_COLOR_ALPHA);
 					mirrorImage.update();
+					skeletonMesh.clear();
 					if (bones.size() > 0) {
 						for (auto bone : bones) {
-							skeletonLines.push_back(make_pair(bone.first, bone.second));
+							//skeletonLines.push_back(make_pair(bone.first, bone.second));
+							float lineWidth = 10.0f;
+							ofVec2f diff = bone.first - bone.second;
+							diff.rotate(90);
+							diff.normalize();
+							diff *= lineWidth / 2;
+							skeletonMesh.addVertex(bone.first + diff);
+							skeletonMesh.addVertex(bone.second + diff);
+							skeletonMesh.addVertex(bone.first - diff);
+
+							skeletonMesh.addVertex(bone.first - diff);
+							skeletonMesh.addVertex(bone.second - diff);
+							skeletonMesh.addVertex(bone.second + diff);
 						}
 					}
 				}
@@ -204,9 +216,10 @@ void SharedData::drawCorrectDisplayImage() {
 		mirrorImage.draw(0, 0);
 		ofPushStyle();
 		ofSetColor(0);
-		for (auto skeleLine : skeletonLines) {
-			ofLine(skeleLine.first, skeleLine.second);
-		}
+		skeletonMesh.draw();
+		//for (auto skeleLine : skeletonLines) {
+		//	ofLine(skeleLine.first, skeleLine.second);
+		//}
 		ofPopStyle();
 	}
 	if (displayMode == displayModeID::INVISIBLE) {
@@ -221,7 +234,6 @@ void SharedData::drawCorrectDisplayImage() {
 	if (displayMode == displayModeID::SILHOUETTE) {
 		ofSetColor(255);
 		mirrorImage.draw(0, 0, colFrameWidth, colFrameHeight);
-		//mirrorImage.drawSubsection(0, 0, colFrameWidth, colFrameHeight * 424/512, 0, 0, 512, 424);
 	}
 }
 
