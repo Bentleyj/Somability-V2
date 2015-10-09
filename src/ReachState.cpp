@@ -52,13 +52,13 @@ void ReachState::setup() {
 
 void ReachState::initTriggers() {
 	// y position of the triggers, 2/9ths down the screen
-	float yy = getSharedData().colFrameHeight*1.0f / 6.0f;
+	float yy = getSharedData().activeFrameHeight*1.0f / 6.0f;
 	//triggers.resize(SharedData::NUM_SHAPES);
 	for (int i = 0; i < SharedData::NUM_SHAPES; i++) {
-		float xpos = ofMap(i, -0.25, SharedData::NUM_SHAPES - 0.25, 0, getSharedData().colFrameWidth);
+		float xpos = ofMap(i, -0.25, SharedData::NUM_SHAPES - 0.25, 0, getSharedData().activeFrameWidth);
 		//		ofLine(xpos, 0, xpos, 480);
 		ofRectangle r;
-		float w = shapeSize*getSharedData().colFrameWidth / 7.0f;
+		float w = shapeSize*getSharedData().activeFrameWidth / 7.0f;
 		r.set(xpos, yy, w, w);
 		triggers.push_back(make_pair(make_pair((SharedData::ShapeID)i, r), 1.0f));
 	}
@@ -93,7 +93,7 @@ void ReachState::stateExit() {
 		getSharedData().box2d->getWorld()->DestroyBody(bodyToDelete);
 	}
 
-	getSharedData().box2d->createBounds(0, 0, getSharedData().colFrameWidth, getSharedData().colFrameHeight);
+	getSharedData().box2d->createBounds(0, 0, getSharedData().activeFrameWidth, getSharedData().activeFrameHeight);
 }
 
 //void ReachState::setupGui(SomabilityGui *gui) {
@@ -132,7 +132,7 @@ void ReachState::update()
 			for (auto point : _colSpacePoints) {
 				for (int i = 0; i < triggers.size(); i++) {
 					if (triggers[i].first.second.inside(point.X, point.Y) && ofGetElapsedTimeMillis() - lastSpawnTime > MIN_TIME_BETWEEN_SPAWNS) {
-						addShape(triggers[i].first.first, ofVec2f(ofRandom(0, getSharedData().colFrameWidth), 1));
+						addShape(triggers[i].first.first, ofVec2f(ofRandom(0, getSharedData().activeFrameWidth), 1));
 						lastSpawnTime = ofGetElapsedTimeMillis();
 					}
 				}

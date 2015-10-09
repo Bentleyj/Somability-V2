@@ -220,7 +220,8 @@ void SharedData::drawCorrectDisplayImage() {
 	}
 	if (displayMode == displayModeID::SILHOUETTE) {
 		ofSetColor(255);
-		mirrorImage.drawSubsection(0, 0, colFrameWidth, colFrameHeight * 424/512, 0, 0, 512, 424);
+		mirrorImage.draw(0, 0, colFrameWidth, colFrameHeight);
+		//mirrorImage.drawSubsection(0, 0, colFrameWidth, colFrameHeight * 424/512, 0, 0, 512, 424);
 	}
 }
 
@@ -327,6 +328,16 @@ void SharedData::changeDisplayMode(int key) {
 			break;
 		default:
 			break;
+	}
+	if (displayMode == displayModeID::SILHOUETTE) {
+		//setImageTransform(indexFrameWidth, indexFrameHeight, ofGetWidth(), ofGetHeight());
+		//activeFrameWidth = indexFrameWidth;
+		//activeFrameHeight = indexFrameHeight;
+	}
+	else {
+		//setImageTransform(colFrameWidth, colFrameHeight, ofGetWidth(), ofGetHeight());
+		//activeFrameWidth = colFrameWidth;
+		//activeFrameHeight = colFrameHeight;
 	}
 }
 

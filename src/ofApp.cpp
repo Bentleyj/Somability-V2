@@ -31,9 +31,16 @@ void ofApp::setup()
 	stateMachine.getSharedData()._colSpacePoints = ref new Array<ColorSpacePoint>(2);
 
 	//load size of color stream
-
 	stateMachine.getSharedData().colFrameWidth = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Width;
 	stateMachine.getSharedData().colFrameHeight = stateMachine.getSharedData()._kinect->ColorFrameSource->FrameDescription->Height;
+
+	//load size of index stream
+	stateMachine.getSharedData().indexFrameWidth = stateMachine.getSharedData()._kinect->BodyIndexFrameSource->FrameDescription->Width;
+	stateMachine.getSharedData().indexFrameHeight = stateMachine.getSharedData()._kinect->BodyIndexFrameSource->FrameDescription->Height;
+
+	//seActive Frame initially
+	stateMachine.getSharedData().activeFrameWidth = stateMachine.getSharedData().colFrameWidth;
+	stateMachine.getSharedData().activeFrameHeight = stateMachine.getSharedData().colFrameHeight;
 
 	//set up variables in shared data for box2d
 	stateMachine.getSharedData().box2d->init();

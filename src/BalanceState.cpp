@@ -117,8 +117,8 @@ void BalanceState::update()
 
 	if (mustFire) {
 		//	boing.play();
-		int initialX = getSharedData().colFrameWidth;
-		int initialY = getSharedData().colFrameHeight/2;
+		int initialX = getSharedData().activeFrameWidth;
+		int initialY = getSharedData().activeFrameHeight/2;
 		shoot(initialX, initialY);
 		mustFire = false;
 	}
@@ -276,7 +276,7 @@ void BalanceState::draw()
 
 	// draw the cannon
 	ofPushMatrix();
-	ofTranslate(getSharedData().colFrameWidth, getSharedData().colFrameHeight / 2, 0);
+	ofTranslate(getSharedData().activeFrameWidth, getSharedData().activeFrameHeight / 2, 0);
 	ofRotate(ofRadToDeg(shootingAngle),0,0,1);
 	if (getSharedData().displayMode == getSharedData().displayModeID::INVISIBLE) ofSetColor(0);
 	else ofSetColor(255);
@@ -373,7 +373,7 @@ void BalanceState::stateExit() {
 		getSharedData().box2d->getWorld()->DestroyBody(bodyToDelete);
 	}
 
-	getSharedData().box2d->createBounds(0, 0, getSharedData().colFrameWidth, getSharedData().colFrameHeight);
+	getSharedData().box2d->createBounds(0, 0, getSharedData().activeFrameWidth, getSharedData().activeFrameHeight);
 }
 //
 //

@@ -51,6 +51,10 @@ public:
 	ofTrueTypeFont font, smallFont;
 	int colFrameWidth;
 	int colFrameHeight;
+	int indexFrameWidth;
+	int indexFrameHeight;
+	int activeFrameWidth;
+	int activeFrameHeight;
 
 	vector<std::pair<ofVec2f, ofVec2f>> skeletonLines;
 

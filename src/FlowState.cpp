@@ -150,7 +150,6 @@ void FlowState::draw()
 	ofScale(getSharedData().imgTransform.second, getSharedData().imgTransform.second, getSharedData().imgTransform.second);
 	ofSetColor(255);
 	getSharedData().drawCorrectDisplayImage();
-
 	ofSetColor(0);
 	
 	//ofScale
